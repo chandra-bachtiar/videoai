@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VideoAI — Generate Video with AI</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,sans-serif;background:#0f0f1a;color:#e0d8f0;min-height:100vh}
+  .container{max-width:900px;margin:0 auto;padding:2rem}
+  h1{font-size:2rem;background:linear-gradient(135deg,#f093fb,#f5576c,#ffa726);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+  .sub{color:#888;margin-bottom:2rem}
+  .card{background:#1a1a2e;border:1px solid #2d2d4a;border-radius:16px;padding:2rem;margin-bottom:1.5rem}
+  label{display:block;margin-bottom:.4rem;color:#b388ff;font-weight:600;font-size:.9rem}
+  input,textarea,select{width:100%;padding:.75rem;background:#0f0f1a;border:1px solid #2d2d4a;border-radius:8px;color:#e0d8f0;font-family:inherit;font-size:.95rem;margin-bottom:1.2rem}
+  textarea{resize:vertical;min-height:120px}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:#f5576c}
+  input[type="file"]{padding:.6rem}
+  .row{display:flex;gap:1rem;flex-wrap:wrap}
+  .row>label{flex:1;min-width:150px}
+  button{display:block;width:100%;padding:1rem;background:linear-gradient(135deg,#f5576c,#ffa726);color:#fff;border:none;border-radius:12px;font-size:1.1rem;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s}
+  button:hover{transform:translateY(-2px);box-shadow:0 8px 30px #f5576c44}
+  button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .result{margin-top:1.5rem}
+  .result video,.result img{width:100%;border-radius:12px;margin-top:1rem}
+  .status{background:#1a1a2e;border:1px solid #2d2d4a;border-radius:8px;padding:1rem;margin:1rem 0;font-size:.9rem;color:#a08cc0}
+  .status.loading{border-color:#ffa726;color:#ffa726}
+  .status.done{border-color:#4caf50;color:#4caf50}
+  .status.error{border-color:#f44336;color:#f44336}
+  .preview{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+  .preview img,.preview video{width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #2d2d4a}
+  .hint{font-size:.8rem;color:#6d5c91;margin-top:-.8rem;margin-bottom:1rem}
+  .spinner{display:inline-block;width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .8s linear infinite;margin-right:.5rem}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎬 VideoAI Generator</h1>
+  <p class="sub">Dreamina Seedance 2.0 — Image/Video to Video</p>
+
+  <div class="card">
+    <label>📝 Prompt</label>
+    <textarea id="prompt" placeholder="Deskripsikan video yang mau dibuat..."></textarea>
+
+    <label>🖼️ Gambar Referensi (maks 5)</label>
+    <input type="file" id="images" multiple accept="image/*">
+    <p class="hint">Gambar bisa digunakan sebagai first_frame/last_frame via metadata</p>
+    <div class="preview" id="imgPreview"></div>
+
+    <label>🎵 Audio (maks 3) — Background music / voiceover</label>
+    <input type="file" id="audios" multiple accept="audio/*">
+
+    <label>🎥 Video Referensi (maks 3)</label>
+    <input type="file" id="videos" multiple accept="video/*">
+
+    <div class="row">
+      <label>⏱️ Durasi (detik)
+        <select id="duration">
+          <option value="5">5 detik</option>
+          <option value="8">8 detik</option>
+          <option value="10">10 detik</option>
+          <option value="15">15 detik</option>
+        </select>
+      </label>
+      <label>📐 Resolusi
+        <select id="resolution">
+          <option value="720p">720p</option>
+          <option value="1080p">1080p</option>
+        </select>
+      </label>
+      <label>🤖 Model
+        <select id="model">
+          <option value="dreamina-seedance-2-0-fast-260128">Seedance 2.0 Fast</option>
+          <option value="dreamina-seedance-2-0-pro-260128">Seedance 2.0 Pro</option>
+        </select>
+      </label>
+    </div>
+
+    <label>🖼️ First Frame (opsional)</label>
+    <input type="file" id="firstFrame" accept="image/*">
+
+    <label>🖼️ Last Frame (opsional)</label>
+    <input type="file" id="lastFrame" accept="image/*">
+
+    <button id="submit" onclick="generate()">🚀 Generate Video</button>
+  </div>
+
+  <div id="status"></div>
+  <div id="result"></div>
+</div>
+
+<script>
+let apiKey = localStorage.getItem('vai_apikey');
+
+function checkAuth() {
+  if (!apiKey) {
+    document.body.innerHTML = `
+      <div class="container" style="display:flex;align-items:center;justify-content:center;min-height:100vh">
+        <div class="card" style="max-width:400px;text-align:center">
+          <h1>🔑 API Key</h1>
+          <p class="sub" style="margin:1rem 0">Masukkan TokenRouter API Key untuk generate video</p>
+          <input id="keyInput" type="password" placeholder="sk-..." style="text-align:center;font-size:1.1rem">
+          <p class="hint">Key disimpan di browser, tidak dikirim ke server kami.</p>
+          <button onclick="doLogin()">🔓 Simpan</button>
+          <p id="loginError" style="color:#f44336;margin-top:.5rem;display:none">Key tidak valid!</p>
+        </div>
+      </div>`;
+  }
+}
+
+async function doLogin() {
+  const key = document.getElementById('keyInput').value.trim();
+  if (!key.startsWith('sk-')) {
+    document.getElementById('loginError').textContent = 'Format key: sk-...';
+    document.getElementById('loginError').style.display = 'block';
+    return;
+  }
+  // Quick test hit ke server, pakai key user
+  try {
+    const res = await fetch('/api/generate?test=1', { method: 'POST', body: new FormData(), headers: { 'X-API-Key': key }});
+    if (res.status === 401) {
+      document.getElementById('loginError').textContent = 'Key tidak valid!';
+      document.getElementById('loginError').style.display = 'block';
+      return;
+    }
+    apiKey = key;
+    localStorage.setItem('vai_apikey', key);
+    location.reload();
+  } catch(e) {
+    document.getElementById('loginError').textContent = 'Gagal koneksi';
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function authHeaders() {
+  return apiKey ? { 'X-API-Key': apiKey } : {};
+}
+
+checkAuth();
+function previewImages(e) {
+  const p = document.getElementById('imgPreview');
+  p.innerHTML = '';
+  [...e.target.files].forEach(f => {
+    const url = URL.createObjectURL(f);
+    const isVideo = f.type.startsWith('video/');
+    p.innerHTML += isVideo
+      ? `<video src="${url}" muted></video>`
+      : `<img src="${url}" alt="preview">`;
+  });
+}
+
+async function generate() {
+  const prompt = document.getElementById('prompt').value.trim();
+  if (!prompt) return alert('Prompt wajib diisi!');
+
+  const btn = document.getElementById('submit');
+  const status = document.getElementById('status');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating...';
+  status.innerHTML = '<div class="status loading"><span class="spinner"></span> Mengirim ke server...</div>';
+
+  const fd = new FormData();
+  fd.append('prompt', prompt);
+  fd.append('duration', document.getElementById('duration').value);
+  fd.append('resolution', document.getElementById('resolution').value);
+  fd.append('model', document.getElementById('model').value);
+
+  ['images','audios','videos','firstFrame','lastFrame'].forEach(id => {
+    const input = document.getElementById(id);
+    if (input.files.length) {
+      [...input.files].forEach(f => fd.append(id, f));
+    }
+  });
+
+  try {
+    const res = await fetch('/api/generate', { method: 'POST', body: fd, headers: authHeaders() });
+    const data = await res.json();
+
+    if (data.task_id) {
+      status.innerHTML = `<div class="status loading"><span class="spinner"></span> Task: ${data.task_id} — menunggu hasil...</div>`;
+      pollStatus(data.task_id);
+    } else if (data.error) {
+      status.innerHTML = `<div class="status error">❌ ${data.error.message || data.error}</div>`;
+      btn.disabled = false;
+      btn.textContent = '🚀 Generate Video';
+    } else {
+      status.innerHTML = `<div class="status done">✅ Berhasil!</div>`;
+      showResult(data);
+      btn.disabled = false;
+      btn.textContent = '🚀 Generate Video';
+    }
+  } catch (err) {
+    status.innerHTML = `<div class="status error">❌ Gagal: ${err.message}</div>`;
+    btn.disabled = false;
+    btn.textContent = '🚀 Generate Video';
+  }
+}
+
+async function pollStatus(taskId) {
+  const status = document.getElementById('status');
+  let attempts = 0;
+  const max = 60;
+
+  while (attempts < max) {
+    await new Promise(r => setTimeout(r, 5000));
+    try {
+      const res = await fetch(`/api/status/${taskId}`, { headers: authHeaders() });
+      const data = await res.json();
+
+      if (data.status === 'completed' || data.output) {
+        status.innerHTML = `<div class="status done">✅ Selesai!</div>`;
+        showResult(data);
+        document.getElementById('submit').disabled = false;
+        document.getElementById('submit').textContent = '🚀 Generate Video';
+        return;
+      }
+      if (data.status === 'failed') {
+        status.innerHTML = `<div class="status error">❌ Gagal: ${data.error || 'Unknown error'}</div>`;
+        document.getElementById('submit').disabled = false;
+        document.getElementById('submit').textContent = '🚀 Generate Video';
+        return;
+      }
+      status.innerHTML = `<div class="status loading"><span class="spinner"></span> Processing... (${++attempts}/${max})</div>`;
+    } catch (err) {
+      status.innerHTML = `<div class="status error">❌ Poll error: ${err.message}</div>`;
+      return;
+    }
+  }
+  status.innerHTML = `<div class="status error">⏰ Timeout — cek manual task: ${taskId}</div>`;
+}
+
+function showResult(data) {
+  const r = document.getElementById('result');
+  if (data.output) {
+    const url = Array.isArray(data.output) ? data.output[0] : data.output;
+    r.innerHTML = `
+      <div class="card">
+        <h3>🎬 Hasil Video</h3>
+        <video controls autoplay loop><source src="${url}" type="video/mp4"></video>
+        <p style="margin-top:1rem"><a href="${url}" target="_blank" style="color:#ffa726">📥 Download Video</a></p>
+      </div>`;
+  }
+}
+</script>
+</body>
+</html>
