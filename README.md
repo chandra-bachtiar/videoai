@@ -1,0 +1,36 @@
+# submit generations task
+
+curl -X POST "https://api.tokenrouter.com/v1/video/generations" \
+    -H "Authorization: Bearer <YOUR_API_KEY>" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "model": "dreamina-seedance-2-0-fast-260128",
+      "prompt": "Use the first-person POV framing from [Video 1] throughout, and use [Audio 1] as the background music throughout. First-person POV fruit tea promotional 
+  ad, seedance limited-edition apple fruit tea; opening frame is [Image 1], your hand picks a dew-covered Aksu red apple, a light, crisp apple tapping sound; 2–4 seconds: 
+  fast cuts, your hand drops apple chunks into a shaker, adds ice and tea base, shakes forcefully, ice clinking and shaking sounds sync with upbeat rhythmic beats, 
+  background audio: {Fresh-cut, shaken fresh}; 4–6 seconds: first-person close-up of the finished drink, layered fruit tea is poured into a clear cup, your hand gently 
+  squeezes milk foam to spread across the top, a pink brand sticker is applied to the cup, the camera moves closer to show the layered textures of the foam and fruit tea; 
+  6–8 seconds: first-person hand-held toast shot, you raise the fruit tea from [Image 2] toward the camera (simulating handing it to the viewer), the cup label is clearly
+  visible, background audio {Take a sip of fresh refreshment}, the final frame freezes on Image 2. All background voice audio uses a female voice.",
+      "images": [
+        "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_image/r2v_tea_pic1.jpg",
+        "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_image/r2v_tea_pic2.jpg"
+      ],
+      "audios": [
+        "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_audio/r2v_tea_audio1.mp3"
+      ],
+      "videos": [
+        "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_video/r2v_tea_video1.mp4"
+      ],
+      "metadata": {
+        "duration": 5,
+        "resolution": "720p",
+        "first_frame": "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_image/r2v_tea_pic1.jpg",
+        "last_frame": "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_image/r2v_tea_pic1.jpg"
+      }
+    }'
+
+# Get task progress
+
+curl "https://api.tokenrouter.com/v1/video/generations/<TASK_ID>" \
+  -H "Authorization: Bearer <YOUR_API_KEY>"
