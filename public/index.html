@@ -79,12 +79,12 @@
 <div id="root"></div>
 
 <script>
-const AK = localStorage.getItem('vai_key');
-if(!AK) rLogin(); else rApp();
-
 // ---- HISTORY ----
 let HISTORY = [];
 try { HISTORY = JSON.parse(localStorage.getItem('vai_tasks')||'[]'); } catch(e){}
+
+const AK = localStorage.getItem('vai_key');
+if(!AK) rLogin(); else rApp();
 
 function saveTask(id, prompt, model, duration, status){
   HISTORY = HISTORY.filter(t => t.id !== id);
