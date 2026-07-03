@@ -6,207 +6,302 @@
 <title>VideoAI</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #06060e; --panel: #0e0e1c; --glass: #111122cc;
-    --border: #1e1e3a; --border-focus: #7c3aed; --purple: #a855f7;
-    --purple-glow: #a855f740; --orange: #f97316; --text: #f0e8ff;
-    --muted: #8880a8; --red: #ef4444; --green: #22c55e;
-  }
+  :root{--bg:#06060e;--panel:#0e0e1c;--glass:#111122cc;--border:#1e1e3a;--focus:#7c3aed;--purple:#a855f7;--glow:#a855f740;--orange:#f97316;--text:#f0e8ff;--muted:#8880a8;--red:#ef4444;--green:#22c55e}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
   .glow-top{position:fixed;top:-200px;left:50%;translate:-50% 0;width:600px;height:400px;background:radial-gradient(circle,#7c3aed22,transparent 70%);pointer-events:none;z-index:0}
-  .glow-bottom{position:fixed;bottom:-200px;left:50%;translate:-50% 0;width:500px;height:300px;background:radial-gradient(circle,#f9731610,transparent 70%);pointer-events:none;z-index:0}
-  .container{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:3rem 1.5rem 6rem}
-  .nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem}
-  .logo{font-size:1.35rem;font-weight:800}
-  .logo span{background:linear-gradient(135deg,#c084fc,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .key-badge{display:flex;align-items:center;gap:.5rem;padding:.4rem .9rem;background:var(--panel);border:1px solid var(--border);border-radius:99px;font-size:.78rem;color:var(--muted);cursor:pointer}
-  .key-badge:hover{border-color:var(--purple)}
-  .key-badge .dot{width:6px;height:6px;background:var(--green);border-radius:50%}
-  .hero{text-align:center;margin-bottom:2.5rem}
-  .hero h1{font-size:2.8rem;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:.3rem}
-  .hero .grad{background:linear-gradient(135deg,#e9d5ff,#a855f7,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .hero p{color:var(--muted);font-size:1.05rem}
-  .prompt-wrap{border:1.5px solid var(--border);border-radius:16px;background:var(--glass);backdrop-filter:blur(20px);margin-bottom:1.2rem;transition:border-color .2s,box-shadow .2s}
-  .prompt-wrap:focus-within{border-color:var(--border-focus);box-shadow:0 0 0 4px var(--purple-glow)}
-  .prompt-wrap textarea{display:block;width:100%;min-height:160px;padding:1.3rem 1.2rem 2.5rem;background:transparent;border:none;color:var(--text);font:inherit;font-size:1rem;line-height:1.7;resize:none;outline:none;overflow:hidden;field-sizing:content}
-  .prompt-wrap textarea::placeholder{color:var(--muted);opacity:.45}
-  .prompt-meta{display:flex;justify-content:space-between;padding:.3rem 1.2rem .8rem;font-size:.72rem;color:var(--muted)}
-  .controls{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.2rem}
+  .container{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:1.5rem 1.5rem 4rem}
+  
+  /* Nav */
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+  .logo{font-size:1.3rem;font-weight:800}
+  .logo s{background:linear-gradient(135deg,#c084fc,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+  .nav-tabs{display:flex;gap:.3rem;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:.3rem}
+  .nav-tab{padding:.45rem 1.2rem;border-radius:9px;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .2s;border:none;background:none;font-family:inherit}
+  .nav-tab.active{background:var(--purple);color:#fff}
+  .nav-tab:hover:not(.active){background:var(--glass)}
+  .key-btn{display:flex;align-items:center;gap:.4rem;padding:.4rem .8rem;background:var(--panel);border:1px solid var(--border);border-radius:99px;font-size:.72rem;color:var(--muted);cursor:pointer;font-family:inherit}
+  .key-btn:hover{border-color:var(--purple)}
+  .dot{width:5px;height:5px;background:var(--green);border-radius:50%}
+  
+  .page{display:none}
+  .page.active{display:block}
+  
+  /* Generate page */
+  .prompt-box{border:1.5px solid var(--border);border-radius:16px;background:var(--glass);backdrop-filter:blur(20px);margin-bottom:1rem;transition:border-color .2s,box-shadow .2s}
+  .prompt-box:focus-within{border-color:var(--focus);box-shadow:0 0 0 4px var(--glow)}
+  .prompt-box textarea{display:block;width:100%;min-height:140px;padding:1.2rem 1.2rem 2.2rem;background:transparent;border:none;color:var(--text);font:inherit;font-size:.95rem;line-height:1.65;resize:none;outline:none;overflow:hidden;field-sizing:content}
+  .prompt-box textarea::placeholder{color:var(--muted);opacity:.45}
+  .prompt-meta{display:flex;justify-content:space-between;padding:.2rem 1.2rem .7rem;font-size:.7rem;color:var(--muted)}
+  
+  .ctrls{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
   .ctrl{flex:1;min-width:130px}
-  .ctrl label{display:block;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.4rem;padding-left:2px}
-  .ctrl select{width:100%;padding:.75rem 2rem .75rem 1rem;background:var(--panel);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font:inherit;font-size:.9rem;font-weight:500;cursor:pointer;transition:border-color .2s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238880a8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center}
+  .ctrl label{display:block;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.3rem;padding-left:2px}
+  .ctrl select{width:100%;padding:.7rem 1.8rem .7rem .9rem;background:var(--panel);border:1.5px solid var(--border);border-radius:11px;color:var(--text);font:inherit;font-size:.85rem;font-weight:500;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238880a8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6rem center;transition:border-color .2s}
   .ctrl select:hover{border-color:var(--purple)}
-  .ctrl select:focus{outline:none;border-color:var(--border-focus);box-shadow:0 0 0 3px var(--purple-glow)}
-  .btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:1.1rem;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:14px;font-size:1.05rem;font-weight:700;font-family:inherit;cursor:pointer;transition:all .25s}
-  .btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px #7c3aed50}
-  .btn:disabled{opacity:.4;cursor:not-allowed}
-  .status-bar{margin-top:1.5rem;padding:1rem 1.2rem;background:var(--panel);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:.75rem;font-size:.88rem;display:none}
-  .status-bar.on{display:flex}
-  .status-bar.processing{border-color:var(--orange);color:var(--orange)}
-  .status-bar.success{border-color:var(--green);color:var(--green)}
-  .status-bar.error{border-color:var(--red);color:var(--red)}
-  .spinner{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+  .ctrl select:focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px var(--glow)}
+  
+  .btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.9rem;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:13px;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;width:100%}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 10px 30px #7c3aed40}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  
+  /* Live tasks */
+  .live-tasks{margin-top:1.5rem}
+  .live-task{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:.6rem;display:flex;align-items:center;gap:1rem}
+  .live-task .thumb{width:60px;height:60px;border-radius:8px;background:var(--glass);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+  .live-task .thumb img,.live-task .thumb video{width:100%;height:100%;object-fit:cover}
+  .live-task .info{flex:1;min-width:0}
+  .live-task .info .t{font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .live-task .info .m{font-size:.7rem;color:var(--muted);margin-top:.2rem}
+  .live-task .status-tag{padding:.25rem .6rem;border-radius:99px;font-size:.68rem;font-weight:600;flex-shrink:0}
+  .live-task .status-tag.proc{background:var(--orange);color:#fff}
+  .live-task .status-tag.ok{background:var(--green);color:#fff}
+  .live-task .status-tag.fail{background:var(--red);color:#fff}
+  
+  .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;display:inline-block}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .result{margin-top:1.5rem}
-  .result .prev{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-  .result video{width:100%;display:block}
-  .result .act{display:flex;gap:.5rem;padding:1rem}
-  .result .act a{flex:1;text-align:center;padding:.6rem;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
-  .result .act a:hover{background:var(--purple-glow);border-color:var(--purple)}
-  .history{margin-top:2rem;border-top:1px solid var(--border);padding-top:1.5rem}
-  .history .title{font-size:.85rem;color:var(--muted);margin-bottom:.8rem;font-weight:600}
-  .h-item{display:flex;justify-content:space-between;align-items:center;padding:.6rem .8rem;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:.4rem;cursor:pointer;transition:border-color .2s}
-  .h-item:hover{border-color:var(--purple)}
-  .h-item .hi-left{flex:1;min-width:0}
-  .h-item .hi-prompt{font-size:.8rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .h-item .hi-meta{font-size:.68rem;color:var(--muted);margin-top:.15rem}
-  .h-item .hi-id{font-size:.7rem;color:var(--muted);flex-shrink:0;margin-left:.5rem}
+  
+  /* Video modal */
+  .modal{display:none;position:fixed;inset:0;background:#000000cc;z-index:100;align-items:center;justify-content:center;padding:2rem}
+  .modal.open{display:flex}
+  .modal-inner{max-width:90vw;max-height:90vh;border-radius:16px;overflow:hidden;position:relative}
+  .modal video{width:100%;max-height:85vh;display:block}
+  .modal-close{position:absolute;top:.5rem;right:.5rem;width:32px;height:32px;background:#00000088;color:#fff;border:none;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  
+  /* History page */
+  .h-list{display:flex;flex-direction:column;gap:.5rem}
+  .h-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1.2rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:border-color .2s}
+  .h-card:hover{border-color:var(--purple)}
+  .h-card .thumb{width:90px;height:68px;border-radius:10px;background:var(--glass);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+  .h-card .thumb img,.h-card .thumb video{width:100%;height:100%;object-fit:cover}
+  .h-card .hi{flex:1;min-width:0}
+  .h-card .hi .ht{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .h-card .hi .hm{font-size:.7rem;color:var(--muted);margin-top:.25rem}
+  .h-card .hi .hs{padding:.18rem .5rem;border-radius:99px;font-size:.65rem;font-weight:600;display:inline-block;margin-top:.3rem}
+  .hs.ok{background:#22c55e22;color:var(--green)}
+  .hs.fail{background:#ef444422;color:var(--red)}
+  .hs.proc{background:#f9731622;color:var(--orange)}
+  .h-empty{text-align:center;padding:3rem;color:var(--muted)}
+  
   .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
-  .login-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:3rem 2.5rem;max-width:420px;width:100%;text-align:center;backdrop-filter:blur(20px)}
-  .login-card .icon{font-size:2.5rem;margin-bottom:1rem}
-  .login-card h2{font-size:1.5rem;margin-bottom:.5rem;font-weight:700}
-  .login-card p{color:var(--muted);margin-bottom:1.8rem;font-size:.9rem;line-height:1.5}
-  .login-card input{width:100%;padding:.9rem 1rem;background:var(--panel);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font:inherit;font-size:.95rem;text-align:center;outline:none}
-  .login-card input:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px var(--purple-glow)}
-  .login-card button{margin-top:1rem}
-  .login-card .error{color:var(--red);margin-top:.8rem;font-size:.82rem}
-  @media(max-width:600px){.container{padding:1.5rem 1rem 4rem}.hero h1{font-size:1.8rem}.ctrl{min-width:100%;flex:auto}}
+  .login-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:400px;width:100%;text-align:center;backdrop-filter:blur(20px)}
+  .login-card h2{font-size:1.4rem;margin-bottom:.3rem}
+  .login-card p{color:var(--muted);margin-bottom:1.5rem;font-size:.85rem}
+  .login-card input{width:100%;padding:.8rem 1rem;background:var(--panel);border:1.5px solid var(--border);border-radius:11px;color:var(--text);font:inherit;font-size:.9rem;text-align:center;outline:none}
+  .login-card input:focus{border-color:var(--focus);box-shadow:0 0 0 3px var(--glow)}
+  .login-card button{margin-top:.8rem}
+  .login-card .err{color:var(--red);margin-top:.6rem;font-size:.78rem}
+  
+  @media(max-width:600px){.container{padding:1rem 1rem 3rem}.ctrl{min-width:100%}}
 </style>
 </head>
 <body>
-<div class="glow-top"></div><div class="glow-bottom"></div>
+<div class="glow-top"></div>
 <div id="root"></div>
-
 <script>
-// ---- HISTORY ----
-let HISTORY = [];
-try { HISTORY = JSON.parse(localStorage.getItem('vai_tasks')||'[]'); } catch(e){}
-
 const AK = localStorage.getItem('vai_key');
 if(!AK) rLogin(); else rApp();
 
-function saveTask(id, prompt, model, duration, status){
-  HISTORY = HISTORY.filter(t => t.id !== id);
-  HISTORY.unshift({id, prompt:prompt.slice(0,80), model, duration, status, time:Date.now()});
-  if(HISTORY.length > 20) HISTORY.length = 20;
-  localStorage.setItem('vai_tasks', JSON.stringify(HISTORY));
-}
+// ---- STATE ----
+let PAGE = 'generate';
+let TASKS = {};
+let HISTORY = [];
 
-function renderHistory(){
-  if(!HISTORY.length) return '';
-  let h = '<div class="history"><div class="title">📋 Riwayat Task</div>';
-  HISTORY.forEach(t => {
-    h += `<div class="h-item" onclick="recheck('${t.id}')">
-      <div class="hi-left"><div class="hi-prompt">${t.prompt.replace(/</g,'<')}</div>
-      <div class="hi-meta">${t.model} · ${t.duration}s · ${t.status} · ${new Date(t.time).toLocaleTimeString('id')}</div></div>
-      <span class="hi-id">${t.id.slice(0,10)}...</span></div>`;
-  });
-  h += '</div>';
-  return h;
-}
+try { HISTORY = JSON.parse(localStorage.getItem('vai_tasks')||'[]'); } catch(e){}
 
-function recheck(tid){
-  document.getElementById('statusArea').innerHTML = `<div class="status-bar on processing"><span class="spinner"></span> Mengecek ${tid.slice(0,12)}...</div>`;
-  poll(tid);
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6) }
+
+function switchPage(p){
+  PAGE = p;
+  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.toggle('active',el.dataset.page===p));
+  document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===p));
+  if(p==='history') renderHistoryPage();
 }
 
 function rLogin(){
   document.getElementById('root').innerHTML=`
     <div class="login-wrap"><div class="login-card">
-      <div class="icon">🔑</div><h2>TokenRouter API Key</h2>
-      <p>Masukkan API key untuk mengakses Kling, Hailuo & model video.</p>
+      <div style="font-size:2.5rem;margin-bottom:.5rem">🔑</div>
+      <h2>TokenRouter API Key</h2>
+      <p>Kling · Hailuo · text-to-video</p>
       <input id="k" type="password" placeholder="sk-..." autofocus>
       <button class="btn" onclick="doLogin()">Connect</button>
-      <div class="error" id="e" style="display:none"></div>
+      <div class="err" id="e" style="display:none"></div>
     </div></div>`;
 }
 
 async function doLogin(){
   const k=document.getElementById('k').value.trim();
-  if(!k.startsWith('sk-')){let e=document.getElementById('e');e.textContent='Format: sk-...';e.style.display='block';return}
+  if(!k.startsWith('sk-')){document.getElementById('e').textContent='Format: sk-...';document.getElementById('e').style.display='block';return}
   try{
     const r=await fetch('/api/health',{headers:{'X-API-Key':k}});
-    if(r.status===401){let e=document.getElementById('e');e.textContent='Key tidak valid';e.style.display='block';return}
+    if(r.status===401){document.getElementById('e').textContent='Key invalid';document.getElementById('e').style.display='block';return}
     localStorage.setItem('vai_key',k);location.reload();
-  }catch(err){let e=document.getElementById('e');e.textContent='Gagal koneksi';e.style.display='block'}
+  }catch(err){document.getElementById('e').textContent='Gagal koneksi';document.getElementById('e').style.display='block'}
 }
 
 function rApp(){
   document.getElementById('root').innerHTML=`
     <div class="container">
-      <div class="nav"><div class="logo"><span>🎬</span> Video<span>AI</span></div><div class="key-badge" onclick="logout()"><span class="dot"></span>${AK.slice(0,10)}...</div></div>
-      <div class="hero"><h1>Create video with <span class="grad">AI</span></h1><p>Kling 3 Omni · Turbo · Hailuo</p></div>
-      <div class="prompt-wrap"><textarea id="prompt" placeholder="Deskripsikan video yang ingin dibuat...&#10;&#10;Contoh: A cinematic drone shot gliding through a futuristic cyberpunk city at night, neon lights reflecting on wet asphalt, slow smooth camera pan, atmospheric haze, 4K." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';document.getElementById('cc').textContent=this.value.length+' char'"></textarea><div class="prompt-meta"><span>Text-to-Video</span><span id="cc">0 char</span></div></div>
-      <div class="controls">
-        <div class="ctrl"><label>Model</label><select id="model"><option value="kling-v3-omni">Kling 3 Omni</option><option value="kling-3.0-turbo">Kling 3 Turbo</option><option value="kling-v3">Kling v3</option><option value="kling-v2-6">Kling 2.6</option><option value="MiniMax-Hailuo-2.3">Hailuo 2.3</option></select></div>
-        <div class="ctrl"><label>Durasi</label><select id="duration"><option value="5">5 detik</option><option value="10">10 detik</option><option value="15">15 detik</option></select></div>
-        <div class="ctrl"><label>Mode</label><select id="mode"><option value="std">Standard</option><option value="pro">Pro</option></select></div>
-        <div class="ctrl"><label>Rasio</label><select id="aspect"><option value="16:9">16:9 Landscape</option><option value="9:16">9:16 Portrait</option><option value="1:1">1:1 Square</option><option value="4:3">4:3</option><option value="3:4">3:4</option></select></div>
+      <div class="nav">
+        <div class="logo"><s>🎬</s> Video<s>AI</s></div>
+        <div class="nav-tabs">
+          <button class="nav-tab active" data-page="generate" onclick="switchPage('generate')">Generate</button>
+          <button class="nav-tab" data-page="history" onclick="switchPage('history')">Riwayat</button>
+        </div>
+        <button class="key-btn" onclick="logout()"><span class="dot"></span>${AK.slice(0,8)}...</button>
       </div>
-      <button class="btn" id="sbtn" onclick="gen()"><span>✦</span> Generate Video</button>
-      <div id="statusArea"></div><div id="resultArea"></div>
-      ${renderHistory()}
+      <div id="generate" class="page active">
+        <div class="prompt-box"><textarea id="prompt" placeholder="Deskripsikan video yang ingin dibuat...&#10;&#10;Contoh: A cinematic drone shot gliding through a futuristic cyberpunk city at night, neon lights reflecting on wet asphalt, slow smooth camera pan, atmospheric haze." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea><div class="prompt-meta"><span>Text-to-Video</span></div></div>
+        <div class="ctrls">
+          <div class="ctrl"><label>Model</label><select id="model"><option value="kling-v3-omni">Kling 3 Omni</option><option value="kling-3.0-turbo">Kling 3 Turbo</option><option value="kling-v3">Kling v3</option><option value="kling-v2-6">Kling 2.6</option><option value="MiniMax-Hailuo-2.3">Hailuo 2.3</option></select></div>
+          <div class="ctrl"><label>Durasi</label><select id="duration"><option value="5">5 detik</option><option value="10">10 detik</option><option value="15">15 detik</option></select></div>
+          <div class="ctrl"><label>Mode</label><select id="mode"><option value="std">Standard</option><option value="pro">Pro</option></select></div>
+          <div class="ctrl"><label>Rasio</label><select id="aspect"><option value="16:9">16:9 Landscape</option><option value="9:16">9:16 Portrait</option><option value="1:1">1:1 Square</option></select></div>
+        </div>
+        <button class="btn" id="genBtn" onclick="gen()"><span>✦</span> Generate</button>
+        <div class="live-tasks" id="liveTasks"></div>
+      </div>
+      <div id="history" class="page">
+        <div class="h-list" id="historyList"></div>
+      </div>
+      <div class="modal" id="modal" onclick="closeModal()"><div class="modal-inner" onclick="event.stopPropagation()"><button class="modal-close" onclick="closeModal()">✕</button><video controls autoplay loop id="modalVideo"></video></div></div>
     </div>`;
-  document.getElementById('prompt').addEventListener('input',function(){this.style.height='auto';this.style.height=this.scrollHeight+'px'});
 }
 
 async function gen(){
   const p=document.getElementById('prompt').value.trim();
   if(!p) return alert('Masukkan prompt!');
-  const btn=document.getElementById('sbtn');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Generating...';
-  const s=document.getElementById('statusArea');
-  s.innerHTML='<div class="status-bar on processing"><span class="spinner"></span>Mengirim ke TokenRouter...</div>';
+  
+  const id = uid();
   const model = document.getElementById('model').value;
   const duration = document.getElementById('duration').value;
+  
+  // Add live card
+  TASKS[id] = { status:'sending', prompt:p, model, duration };
+  addHistory(id, p, model, duration, 'processing');
+  renderLiveTasks();
+  document.getElementById('prompt').value='';
+  
   try{
     const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':AK},body:JSON.stringify({prompt:p,model,duration,mode:document.getElementById('mode').value,aspectRatio:document.getElementById('aspect').value})});
     const d=await r.json();
+    
     if(d.task_id){
-      saveTask(d.task_id, p, model, duration, 'processing');
-      s.innerHTML=`<div class="status-bar on processing"><span class="spinner"></span>Processing... <b>${d.task_id}</b></div>`;
-      poll(d.task_id);
-    }else if(d.error){
-      s.innerHTML=`<div class="status-bar on error">❌ ${d.error.message||JSON.stringify(d.error)}</div>`;
-      btn.disabled=false;btn.innerHTML='<span>✦</span> Generate Video';
-    }else{
-      s.innerHTML='<div class="status-bar on success">✅ Selesai!</div>';show(d);
-      btn.disabled=false;btn.innerHTML='<span>✦</span> Generate Video';
+      TASKS[id] = { status:'processing', taskId:d.task_id, prompt:p, model, duration };
+      renderLiveTasks();
+      pollOne(id, d.task_id);
+    } else {
+      TASKS[id] = { status:'error', error:d.error?.message||JSON.stringify(d.error), prompt:p, model, duration };
+      updateHistory(id, 'gagal');
+      renderLiveTasks();
     }
-  }catch(err){
-    s.innerHTML=`<div class="status-bar on error">❌ ${err.message}</div>`;
-    btn.disabled=false;btn.innerHTML='<span>✦</span> Generate Video';
+  } catch(err) {
+    TASKS[id] = { status:'error', error:err.message, prompt:p, model, duration };
+    updateHistory(id, 'gagal');
+    renderLiveTasks();
   }
 }
 
-async function poll(tid){
-  const s=document.getElementById('statusArea');let n=0;
-  const model = document.getElementById('model')?.value||'';
-  const duration = document.getElementById('duration')?.value||'5';
-  while(n<180){await new Promise(r=>setTimeout(r,5000));
+async function pollOne(lid, taskId){
+  let n=0;
+  while(n<240){
+    await new Promise(r=>setTimeout(r,5000));
     try{
-      const r=await fetch('/api/status/'+tid,{headers:{'X-API-Key':AK}});const d=await r.json();
-      if(d.status==='completed'||d.output){
-        saveTask(tid,'','', '', 'done');
-        s.innerHTML='<div class="status-bar on success">✅ Selesai!</div>';show(d);
-        document.getElementById('sbtn').disabled=false;document.getElementById('sbtn').innerHTML='<span>✦</span> Generate Video';return;
+      const r=await fetch('/api/status/'+taskId,{headers:{'X-API-Key':AK}});
+      const d=await r.json();
+      
+      if(d.status==='completed'&&d.output){
+        TASKS[lid] = { ...TASKS[lid], status:'done', video:d.output, taskId };
+        updateHistory(lid, 'selesai', d.output);
+        renderLiveTasks();
+        return;
       }
       if(d.status==='failed'){
-        saveTask(tid,'','', '', 'gagal');
-        s.innerHTML=`<div class="status-bar on error">❌ ${d.error||'Gagal'}</div>`;return;
+        TASKS[lid] = { ...TASKS[lid], status:'error', error:d.error||'Gagal', taskId };
+        updateHistory(lid, 'gagal');
+        renderLiveTasks();
+        return;
       }
-      n++;s.innerHTML=`<div class="status-bar on processing"><span class="spinner"></span>Processing... ${n}/180</div>`;
-    }catch(err){s.innerHTML=`<div class="status-bar on error">❌ ${err.message}</div>`;return}
+      n++;
+      TASKS[lid] = { ...TASKS[lid], progress:n, taskId };
+      renderLiveTasks();
+    } catch(err){
+      TASKS[lid] = { ...TASKS[lid], status:'error', error:err.message, taskId };
+      updateHistory(lid, 'gagal');
+      renderLiveTasks();
+      return;
+    }
   }
-  saveTask(tid,'','', '', 'timeout');
-  s.innerHTML=`<div class="status-bar on error">⏰ Timeout — ${tid}</div>`;
+  TASKS[lid] = { ...TASKS[lid], status:'timeout', taskId };
+  updateHistory(lid, 'timeout');
+  renderLiveTasks();
 }
 
-function show(d){
-  const url=Array.isArray(d.output)?d.output[0]:d.output;
-  if(!url) return;
-  document.getElementById('resultArea').innerHTML=`<div class="result"><div class="prev"><video controls autoplay loop src="${url}"></video><div class="act"><a href="${url}" download>📥 Download</a><a href="${url}" target="_blank">🔗 Open</a><a href="#" onclick="navigator.clipboard.writeText('${url}');this.textContent='✓ Copied'">📋 Copy</a></div></div></div>`;
+function openVideo(url){
+  document.getElementById('modalVideo').src=url;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('modalVideo').pause();
+  document.getElementById('modal').classList.remove('open');
+}
+
+// ---- LIVE TASK CARDS ----
+function renderLiveTasks(){
+  const el = document.getElementById('liveTasks');
+  if(!el) return;
+  const entries = Object.entries(TASKS).reverse();
+  if(!entries.length){ el.innerHTML=''; return; }
+  
+  el.innerHTML = entries.map(([id,t])=>{
+    const done = t.status==='done';
+    const fail = t.status==='error'||t.status==='timeout';
+    return `<div class="live-task">
+      <div class="thumb" onclick="${done?`openVideo('${t.video}')`:'#'}" style="cursor:${done?'pointer':'default'}">
+        ${done?'<span style="font-size:2rem">🎬</span>':fail?'<span style="font-size:2rem">❌</span>':'<span class="spinner"></span>'}
+      </div>
+      <div class="info">
+        <div class="t">${t.prompt.slice(0,70)}</div>
+        <div class="m">${t.model} · ${t.duration}s · ${t.taskId?.slice(0,14)||''} · ${t.progress?t.progress+'/240 ':''}</div>
+      </div>
+      <span class="status-tag ${done?'ok':fail?'fail':'proc'}">${done?'✓ Selesai':fail?'✕ Gagal':'Processing'}</span>
+    </div>`;
+  }).join('');
+}
+
+// ---- HISTORY ----
+function addHistory(id, prompt, model, duration, status){
+  HISTORY = HISTORY.filter(h=>h.id!==id);
+  HISTORY.unshift({id, prompt:prompt.slice(0,80), model, duration, status, time:Date.now(), video:null});
+  if(HISTORY.length>50) HISTORY.length=50;
+  saveHistory();
+}
+function updateHistory(id, status, video){
+  const h = HISTORY.find(h=>h.id===id);
+  if(h){ h.status=status; if(video) h.video=video; }
+  saveHistory();
+}
+function saveHistory(){
+  localStorage.setItem('vai_tasks',JSON.stringify(HISTORY));
+}
+
+function renderHistoryPage(){
+  const el = document.getElementById('historyList');
+  if(!el) return;
+  if(!HISTORY.length){
+    el.innerHTML='<div class="h-empty"><div style="font-size:3rem;margin-bottom:1rem">📭</div><div style="color:var(--muted)">Belum ada riwayat generate</div></div>';
+    return;
+  }
+  el.innerHTML = HISTORY.map(h=>`
+    <div class="h-card" onclick="${h.video?`openVideo('${h.video}')`:'#'}">
+      <div class="thumb">${h.video?'<span>🎬</span>':'<span>⏳</span>'}</div>
+      <div class="hi">
+        <div class="ht">${h.prompt.replace(/</g,'<')}</div>
+        <div class="hm">${h.model} · ${h.duration}s · ${new Date(h.time).toLocaleString('id',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+        <span class="hs ${h.status==='selesai'?'ok':h.status==='gagal'||h.status==='timeout'?'fail':'proc'}">${h.status}</span>
+      </div>
+    </div>`).join('');
 }
 
 function logout(){localStorage.removeItem('vai_key');location.reload();}
