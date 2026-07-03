@@ -136,7 +136,7 @@ function renderApp() {
   document.getElementById('app').innerHTML = `
     <div class="header">
       <h1>🎬 VideoAI Generator</h1>
-      <p>Dreamina Seedance 2.0 — Generate video dengan AI</p>
+      <p>Generate video dengan Kling, Qwen, Hailuo & HappyHorse</p>
       <span class="badge">${apiKey.substring(0,8)}... · <a href="#" onclick="logout()" style="color:var(--text2)">ganti</a></span>
     </div>
 
@@ -181,7 +181,10 @@ Contoh: A cinematic shot of [Image 1] transforming into a futuristic city, with 
       <div class="card" style="flex:1;margin-bottom:0">
         <div class="card-title"><span class="icon">🤖</span> Model</div>
         <select id="model">
-          <option value="dreamina-seedance-2-0-fast-260128">⚡ Seedance 2.0 Fast</option>
+          <option value="kling-v2-6">🎬 Kling 2.6 (cinematic)</option>
+          <option value="qwen-video-max">🤖 Qwen Video Max</option>
+          <option value="hailuo-2.3">🌊 Hailuo 2.3</option>
+          <option value="happyhorse-v1">🐴 HappyHorse</option>
         </select>
       </div>
       <div class="card" style="flex:1;margin-bottom:0">

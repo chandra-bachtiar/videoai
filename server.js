@@ -51,7 +51,7 @@ app.post('/api/generate', upload.fields([
     if (!prompt) return res.status(400).json({ error: 'Prompt wajib diisi' });
 
     const payload = {
-      model: model || 'dreamina-seedance-2-0-fast-260128',
+      model: model || 'kling-v2-6',
       prompt,
       images: [],
       audios: [],
