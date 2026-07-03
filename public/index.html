@@ -257,17 +257,22 @@ function renderLiveTasks(){
   el.innerHTML = entries.map(([id,t])=>{
     const done = t.status==='done';
     const fail = t.status==='error'||t.status==='timeout';
-    return `<div class="live-task">
-      <div class="thumb" onclick="${done?`openVideo('${t.video}')`:'#'}" style="cursor:${done?'pointer':'default'}">
-        ${done?'<span style="font-size:2rem">🎬</span>':fail?'<span style="font-size:2rem">❌</span>':'<span class="spinner"></span>'}
-      </div>
-      <div class="info">
-        <div class="t">${t.prompt.slice(0,70)}</div>
-        <div class="m">${t.model} · ${t.duration}s · ${t.taskId?.slice(0,14)||''} · ${t.progress?t.progress+'/240 ':''}</div>
-      </div>
-      <span class="status-tag ${done?'ok':fail?'fail':'proc'}">${done?'✓ Selesai':fail?'✕ Gagal':'Processing'}</span>
-    </div>`;
+    return '<div class="live-task">'+
+      '<div class="thumb" data-video="'+(t.video||'')+'" style="cursor:'+(done?'pointer':'default')+'">'+
+        (done?'<span style="font-size:2rem">🎬</span>':fail?'<span style="font-size:2rem">❌</span>':'<span class="spinner"></span>')+
+      '</div>'+
+      '<div class="info">'+
+        '<div class="t">'+t.prompt.slice(0,70)+'</div>'+
+        '<div class="m">'+t.model+' · '+t.duration+'s · '+(t.taskId||'').slice(0,14)+' · '+(t.progress?t.progress+'/240 ':'')+'</div>'+
+      '</div>'+
+      '<span class="status-tag '+(done?'ok':fail?'fail':'proc')+'">'+(done?'✓ Selesai':fail?'✕ Gagal':'Processing')+'</span>'+
+    '</div>';
   }).join('');
+
+  // Click handlers via delegation
+  el.querySelectorAll('.thumb[data-video]').forEach(div=>{
+    div.onclick = function(){ const v=this.getAttribute('data-video'); if(v) openVideo(v); };
+  });
 }
 
 // ---- HISTORY ----
@@ -293,15 +298,23 @@ function renderHistoryPage(){
     el.innerHTML='<div class="h-empty"><div style="font-size:3rem;margin-bottom:1rem">📭</div><div style="color:var(--muted)">Belum ada riwayat generate</div></div>';
     return;
   }
-  el.innerHTML = HISTORY.map(h=>`
-    <div class="h-card" onclick="${h.video?`openVideo('${h.video}')`:'#'}">
-      <div class="thumb">${h.video?'<span>🎬</span>':'<span>⏳</span>'}</div>
-      <div class="hi">
-        <div class="ht">${h.prompt.replace(/</g,'<')}</div>
-        <div class="hm">${h.model} · ${h.duration}s · ${new Date(h.time).toLocaleString('id',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
-        <span class="hs ${h.status==='selesai'?'ok':h.status==='gagal'||h.status==='timeout'?'fail':'proc'}">${h.status}</span>
-      </div>
-    </div>`).join('');
+  el.innerHTML = HISTORY.map(h=>{
+    const d = new Date(h.time);
+    const dl = d.toLocaleString('id',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    return '<div class="h-card" data-video="'+(h.video||'')+'">'+
+      '<div class="thumb">'+(h.video?'<span>🎬</span>':'<span>⏳</span>')+'</div>'+
+      '<div class="hi">'+
+        '<div class="ht">'+h.prompt.replace(/</g,'<')+'</div>'+
+        '<div class="hm">'+h.model+' · '+h.duration+'s · '+dl+'</div>'+
+        '<span class="hs '+(h.status==='selesai'?'ok':h.status==='gagal'||h.status==='timeout'?'fail':'proc')+'">'+h.status+'</span>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  
+  // Click handlers
+  el.querySelectorAll('.h-card[data-video]').forEach(card=>{
+    card.onclick = function(){ const v=this.getAttribute('data-video'); if(v) openVideo(v); };
+  });
 }
 
 function logout(){localStorage.removeItem('vai_key');location.reload();}
