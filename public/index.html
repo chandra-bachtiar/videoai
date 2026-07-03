@@ -4,229 +4,259 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VideoAI — AI Video Generator</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a14; --surface: #141428; --surface2: #1e1e38; --border: #2a2a4a;
-    --primary: #a855f7; --primary-glow: #a855f744; --accent: #f97316;
-    --text: #e8e0f0; --text2: #8b80a0; --danger: #ef4444; --radius: 14px;
+    --bg: #06060e;
+    --panel: #0e0e1c;
+    --glass: #111122cc;
+    --border: #1e1e3a;
+    --border-focus: #7c3aed;
+    --purple: #a855f7;
+    --purple-glow: #a855f740;
+    --orange: #f97316;
+    --text: #f0e8ff;
+    --muted: #8880a8;
+    --red: #ef4444;
+    --green: #22c55e;
+    --radius: 16px;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -20%,#7c3aed12,#0000 60%),radial-gradient(ellipse 40% 50% at 80% 80%,#f9731608,#0000 50%);pointer-events:none;z-index:0}
-  .app{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:2rem}
-  .header{text-align:center;margin-bottom:2rem}
-  .header h1{font-size:2.4rem;font-weight:700;background:linear-gradient(135deg,#c084fc,#a855f7,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .header p{color:var(--text2);margin-top:.4rem}
-  .header .badge{margin-top:.6rem;padding:.25rem .8rem;background:var(--surface2);border:1px solid var(--border);border-radius:99px;font-size:.78rem;color:var(--text2);display:inline-block}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1.2rem}
-  .card-title{font-size:1.05rem;font-weight:600;margin-bottom:1rem;color:var(--text)}
-  textarea,select{width:100%;padding:.85rem 1rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:.95rem;transition:border-color .2s}
-  textarea{resize:vertical;min-height:140px;line-height:1.65}
-  textarea:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
-  .row{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
-  .row>*{flex:1;min-width:140px}
-  button{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:1rem 2rem;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:12px;font-size:1.05rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
-  button:hover{transform:translateY(-1px);box-shadow:0 8px 30px var(--primary-glow)}
-  button:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-  .status{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;margin:1rem 0;display:flex;align-items:center;gap:.8rem;font-size:.9rem}
-  .status.processing{border-color:var(--accent);color:var(--accent)}
-  .status.success{border-color:#22c55e;color:#22c55e}
-  .status.error{border-color:var(--danger);color:var(--danger)}
-  .spinner{width:18px;height:18px;border:2.5px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+  
+  /* Ambient glow */
+  .glow-top{position:fixed;top:-200px;left:50%;translate:-50% 0;width:600px;height:400px;background:radial-gradient(circle,#7c3aed22,transparent 70%);pointer-events:none;z-index:0}
+  .glow-bottom{position:fixed;bottom:-200px;left:50%;translate:-50% 0;width:500px;height:300px;background:radial-gradient(circle,#f9731610,transparent 70%);pointer-events:none;z-index:0}
+  
+  .container{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:3rem 1.5rem 6rem}
+  
+  /* Nav */
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem}
+  .logo{font-size:1.35rem;font-weight:800;letter-spacing:-.02em}
+  .logo span{background:linear-gradient(135deg,#c084fc,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .key-badge{display:flex;align-items:center;gap:.5rem;padding:.4rem .9rem;background:var(--panel);border:1px solid var(--border);border-radius:99px;font-size:.78rem;color:var(--muted);cursor:pointer;transition:border-color .2s}
+  .key-badge:hover{border-color:var(--purple)}
+  .key-badge .dot{width:6px;height:6px;background:var(--green);border-radius:50%}
+  
+  /* Hero */
+  .hero{text-align:center;margin-bottom:2.5rem}
+  .hero h1{font-size:2.8rem;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:.5rem}
+  .hero h1 .grad{background:linear-gradient(135deg,#e9d5ff,#a855f7,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p{color:var(--muted);font-size:1.05rem}
+  
+  /* Prompt */
+  .prompt-box{background:var(--glass);border:1.5px solid var(--border);border-radius:var(--radius);padding:.3rem;margin-bottom:1.2rem;backdrop-filter:blur(20px)}
+  .prompt-box textarea{width:100%;min-height:150px;padding:1.2rem 1rem;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:1rem;line-height:1.7;resize:none;outline:none}
+  .prompt-box textarea::placeholder{color:var(--muted);opacity:.5}
+  .prompt-box:focus-within{border-color:var(--border-focus);box-shadow:0 0 0 4px var(--purple-glow)}
+  .prompt-footer{display:flex;justify-content:space-between;align-items:center;padding:.5rem 1rem .8rem;color:var(--muted);font-size:.75rem}
+  
+  /* Controls */
+  .controls{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.2rem}
+  .control{flex:1;min-width:130px;background:var(--panel);border:1.5px solid var(--border);border-radius:12px;padding:.7rem 1rem;transition:border-color .2s}
+  .control:focus-within{border-color:var(--border-focus)}
+  .control .label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.35rem}
+  .control select{width:100%;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:.9rem;font-weight:500;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238880a8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0 center;padding-right:16px}
+  
+  .btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:1.1rem;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:14px;font-size:1.05rem;font-weight:700;font-family:inherit;cursor:pointer;transition:all .25s;letter-spacing:-.01em}
+  .btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px #7c3aed50}
+  .btn:active:not(:disabled){transform:scale(.98)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  
+  /* Status */
+  .status-bar{margin-top:1.5rem;padding:1rem 1.2rem;background:var(--panel);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:.75rem;font-size:.88rem;opacity:0;transition:opacity .3s}
+  .status-bar.visible{opacity:1}
+  .status-bar.processing{border-color:var(--orange);color:var(--orange)}
+  .status-bar.success{border-color:var(--green);color:var(--green)}
+  .status-bar.error{border-color:var(--red);color:var(--red)}
+  .spinner{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .result video{border-radius:12px;width:100%;margin-top:.5rem}
-  .result .meta{color:var(--text2);font-size:.85rem;margin-top:.8rem}
-  .login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
-  .login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2.5rem;max-width:420px;width:100%;text-align:center}
-  .login-card h2{font-size:1.5rem;margin-bottom:.5rem}
-  .login-card p{color:var(--text2);margin-bottom:1.5rem;font-size:.9rem}
-  .login-card input{width:100%;padding:.85rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:.95rem;text-align:center}
-  .login-card button{width:100%;margin-top:1rem}
-  .footer{text-align:center;padding:2rem;color:var(--text2);font-size:.8rem;border-top:1px solid var(--border);margin-top:2rem}
-  .footer a{color:var(--primary)}
-  .hint{font-size:.78rem;color:var(--text2);margin-top:.3rem}
+  
+  /* Result */
+  .result{margin-top:1.5rem}
+  .result .preview{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  .result video{width:100%;display:block;border-radius:16px 16px 0 0}
+  .result .actions{display:flex;gap:.5rem;padding:1rem}
+  .result .actions a{flex:1;text-align:center;padding:.6rem;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none;font-size:.85rem;font-weight:500;transition:background .2s}
+  .result .actions a:hover{background:var(--purple-glow);border-color:var(--purple)}
+  
+  /* Login */
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
+  .login-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:3rem 2.5rem;max-width:420px;width:100%;text-align:center;backdrop-filter:blur(20px)}
+  .login-card .icon{font-size:2.5rem;margin-bottom:1rem}
+  .login-card h2{font-size:1.5rem;margin-bottom:.5rem;font-weight:700;letter-spacing:-.02em}
+  .login-card p{color:var(--muted);margin-bottom:1.8rem;font-size:.9rem;line-height:1.5}
+  .login-card input{width:100%;padding:.9rem 1rem;background:var(--panel);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:.95rem;text-align:center;outline:none}
+  .login-card input:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px var(--purple-glow)}
+  .login-card button{margin-top:1rem}
+  .login-card .error{color:var(--red);margin-top:.8rem;font-size:.82rem}
+  
+  @media(max-width:600px){
+    .container{padding:1.5rem 1rem 4rem}
+    .hero h1{font-size:1.8rem}
+    .control{min-width:100%;flex:auto}
+  }
 </style>
 </head>
 <body>
-
-<div class="app" id="app"></div>
+<div class="glow-top"></div>
+<div class="glow-bottom"></div>
+<div id="root"></div>
 
 <script>
-let apiKey = localStorage.getItem('vai_apikey');
+const STORE = { apiKey: localStorage.getItem('vai_key') };
 
-if (!apiKey) renderLogin();
-else renderApp();
+if (!STORE.apiKey) rLogin();
+else rApp();
 
-function renderLogin() {
-  document.getElementById('app').innerHTML = `
-    <div class="login-page">
+function rLogin(){
+  document.getElementById('root').innerHTML=`
+    <div class="login-wrap">
       <div class="login-card">
-        <h2>🔑 TokenRouter API Key</h2>
-        <p>Masukkan API key TokenRouter untuk generate video AI.</p>
-        <input id="keyInput" type="password" placeholder="sk-...">
-        <p class="hint">Dapat dari <a href="https://tokenrouter.com" target="_blank" style="color:var(--primary)">tokenrouter.com</a></p>
-        <button onclick="doLogin()">Simpan & Lanjutkan</button>
-        <p id="loginError" style="color:var(--danger);margin-top:.8rem;font-size:.85rem;display:none"></p>
+        <div class="icon">🔑</div>
+        <h2>TokenRouter API Key</h2>
+        <p>Masukkan API key untuk mengakses Kling, Hailuo & model video lainnya.</p>
+        <input id="k" type="password" placeholder="sk-..." autofocus>
+        <button class="btn" onclick="doLogin()">Connect</button>
+        <div class="error" id="e" style="display:none"></div>
       </div>
     </div>`;
 }
 
-async function doLogin() {
-  const key = document.getElementById('keyInput').value.trim();
-  if (!key.startsWith('sk-')) {
-    document.getElementById('loginError').textContent = 'Format: sk-...';
-    document.getElementById('loginError').style.display = 'block'; return;
-  }
-  try {
-    const res = await fetch('/api/health', { headers: { 'X-API-Key': key }});
-    if (res.status === 401) {
-      document.getElementById('loginError').textContent = 'Key tidak valid';
-      document.getElementById('loginError').style.display = 'block'; return;
-    }
-    localStorage.setItem('vai_apikey', key);
+async function doLogin(){
+  const key=document.getElementById('k').value.trim();
+  if(!key.startsWith('sk-')){ document.getElementById('e').textContent='Format: sk-...';document.getElementById('e').style.display='block';return }
+  try{
+    const r=await fetch('/api/health',{headers:{'X-API-Key':key}});
+    if(r.status===401){ document.getElementById('e').textContent='Key tidak valid';document.getElementById('e').style.display='block';return }
+    localStorage.setItem('vai_key',key);
     location.reload();
-  } catch(e) {
-    document.getElementById('loginError').textContent = 'Gagal koneksi ke server';
-    document.getElementById('loginError').style.display = 'block';
-  }
+  }catch(err){ document.getElementById('e').textContent='Gagal koneksi';document.getElementById('e').style.display='block' }
 }
 
-function renderApp() {
-  document.getElementById('app').innerHTML = `
-    <div class="header">
-      <h1>🎬 VideoAI Generator</h1>
-      <p>Kling 3 Omni · Kling Turbo · Hailuo 2.3</p>
-      <span class="badge">${apiKey.substring(0,8)}... · <a href="#" onclick="logout()" style="color:var(--text2)">ganti</a></span>
-    </div>
+function rApp(){
+  const ak=STORE.apiKey;
+  document.getElementById('root').innerHTML=`
+    <div class="container">
+      <div class="nav">
+        <div class="logo"><span>🎬</span> Video<span>AI</span></div>
+        <div class="key-badge" onclick="logout()" title="Ganti key">
+          <span class="dot"></span>${ak.slice(0,10)}...
+        </div>
+      </div>
+      
+      <div class="hero">
+        <h1>Create video with <span class="grad">AI</span></h1>
+        <p>Kling 3 Omni · Turbo · Hailuo — text-to-video</p>
+      </div>
+      
+      <div class="prompt-box">
+        <textarea id="prompt" placeholder="Deskripsikan video yang ingin dibuat...
 
-    <div class="card">
-      <div class="card-title">📝 Prompt</div>
-      <textarea id="prompt" placeholder="Deskripsikan video yang mau dibuat...
-Contoh: A cinematic drone shot of a futuristic city at sunset, neon lights reflecting on wet streets, slow camera pan, 4K quality."></textarea>
-      <p class="hint">Text-to-video — makin detail deskripsi, makin bagus hasilnya.</p>
-    </div>
-
-    <div class="row">
-      <div class="card" style="flex:1;margin-bottom:0">
-        <div class="card-title">🤖 Model</div>
-        <select id="model">
-          <option value="kling-v3-omni">🎬 Kling 3 Omni (best)</option>
-          <option value="kling-3.0-turbo">⚡ Kling 3.0 Turbo (fast)</option>
-          <option value="kling-v3">🎥 Kling v3</option>
-          <option value="kling-v2-6">🎞️ Kling 2.6</option>
-          <option value="MiniMax-Hailuo-2.3">🌊 Hailuo 2.3</option>
-        </select>
+Contoh: A cinematic drone shot gliding through a futuristic cyberpunk city at night, neon lights reflecting on wet asphalt, slow smooth camera pan, atmospheric haze, 4K quality."></textarea>
+        <div class="prompt-footer"><span>Text-to-Video</span><span id="charCount">0 char</span></div>
       </div>
-      <div class="card" style="flex:1;margin-bottom:0">
-        <div class="card-title">⏱️ Durasi</div>
-        <select id="duration">
-          <option value="5">5 detik</option>
-          <option value="10">10 detik</option>
-          <option value="15">15 detik</option>
-        </select>
+      
+      <div class="controls">
+        <div class="control"><div class="label">Model</div><select id="model"><option value="kling-v3-omni">Kling 3 Omni</option><option value="kling-3.0-turbo">Kling 3 Turbo</option><option value="kling-v3">Kling v3</option><option value="kling-v2-6">Kling 2.6</option><option value="MiniMax-Hailuo-2.3">Hailuo 2.3</option></select></div>
+        <div class="control"><div class="label">Durasi</div><select id="duration"><option value="5">5 detik</option><option value="10">10 detik</option><option value="15">15 detik</option></select></div>
+        <div class="control"><div class="label">Mode</div><select id="mode"><option value="std">Standard</option><option value="pro">Pro</option></select></div>
+        <div class="control"><div class="label">Rasio</div><select id="aspect"><option value="16:9">16:9 Landscape</option><option value="9:16">9:16 Portrait</option><option value="1:1">1:1 Square</option><option value="4:3">4:3</option><option value="3:4">3:4</option></select></div>
       </div>
-      <div class="card" style="flex:1;margin-bottom:0">
-        <div class="card-title">🎯 Mode</div>
-        <select id="mode">
-          <option value="std">Standard</option>
-          <option value="pro">Pro (lebih detail)</option>
-        </select>
-      </div>
-      <div class="card" style="flex:1;margin-bottom:0">
-        <div class="card-title">📐 Rasio</div>
-        <select id="aspectRatio">
-          <option value="16:9">16:9 · Landscape</option>
-          <option value="9:16">9:16 · Portrait</option>
-          <option value="1:1">1:1 · Square</option>
-          <option value="4:3">4:3</option>
-          <option value="3:4">3:4</option>
-        </select>
-      </div>
-    </div>
-
-    <button id="submitBtn" onclick="generate()">🚀 Generate Video</button>
-    <div id="statusArea"></div>
-    <div id="resultArea"></div>
-    <div class="footer">VideoAI · Powered by <a href="https://tokenrouter.com" target="_blank">TokenRouter</a></div>
-  `;
+      
+      <button class="btn" id="submitBtn" onclick="gen()"><span>✦</span> Generate Video</button>
+      <div id="statusArea"></div>
+      <div id="resultArea"></div>
+    </div>`;
+  
+  document.getElementById('prompt').addEventListener('input',function(){
+    document.getElementById('charCount').textContent=this.value.length+' char';
+  });
 }
 
-async function generate() {
-  const prompt = document.getElementById('prompt').value.trim();
-  if (!prompt) return alert('Prompt wajib diisi!');
-
-  const btn = document.getElementById('submitBtn');
-  const status = document.getElementById('statusArea');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Generating...';
-  status.innerHTML = '<div class="status processing"><span class="spinner"></span> Mengirim...</div>';
-
-  try {
-    const res = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-      body: JSON.stringify({
+async function gen(){
+  const prompt=document.getElementById('prompt').value.trim();
+  if(!prompt) return alert('Masukkan prompt dulu!');
+  
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Generating...';
+  
+  const s=document.getElementById('statusArea');
+  s.innerHTML='<div class="status-bar visible processing"><span class="spinner"></span>Mengirim ke TokenRouter...</div>';
+  
+  try{
+    const r=await fetch('/api/generate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-API-Key':STORE.apiKey},
+      body:JSON.stringify({
         prompt,
-        model: document.getElementById('model').value,
-        duration: document.getElementById('duration').value,
-        mode: document.getElementById('mode').value,
-        aspectRatio: document.getElementById('aspectRatio').value,
+        model:document.getElementById('model').value,
+        duration:document.getElementById('duration').value,
+        mode:document.getElementById('mode').value,
+        aspectRatio:document.getElementById('aspect').value,
       })
     });
-    const data = await res.json();
-
-    if (data.task_id) {
-      status.innerHTML = `<div class="status processing"><span class="spinner"></span> Task: <b>${data.task_id}</b> — processing...</div>`;
-      pollStatus(data.task_id);
-    } else if (data.error) {
-      status.innerHTML = `<div class="status error">❌ ${data.error.message || JSON.stringify(data.error)}</div>`;
-      btn.disabled = false; btn.innerHTML = '🚀 Generate Video';
-    } else {
-      status.innerHTML = '<div class="status success">✅ Selesai!</div>';
-      showResult(data);
-      btn.disabled = false; btn.innerHTML = '🚀 Generate Video';
+    const d=await r.json();
+    
+    if(d.task_id){
+      s.innerHTML=`<div class="status-bar visible processing"><span class="spinner"></span>Processing... <b>${d.task_id}</b></div>`;
+      poll(d.task_id);
+    }else if(d.error){
+      s.innerHTML=`<div class="status-bar visible error">❌ ${d.error.message||JSON.stringify(d.error)}</div>`;
+      btn.disabled=false; btn.innerHTML='<span>✦</span> Generate Video';
+    }else{
+      s.innerHTML='<div class="status-bar visible success">✅ Selesai!</div>';
+      show(d);
+      btn.disabled=false; btn.innerHTML='<span>✦</span> Generate Video';
     }
-  } catch(err) {
-    status.innerHTML = `<div class="status error">❌ ${err.message}</div>`;
-    btn.disabled = false; btn.innerHTML = '🚀 Generate Video';
+  }catch(err){
+    s.innerHTML=`<div class="status-bar visible error">❌ ${err.message}</div>`;
+    btn.disabled=false; btn.innerHTML='<span>✦</span> Generate Video';
   }
 }
 
-async function pollStatus(taskId) {
-  const status = document.getElementById('statusArea');
-  let attempts = 0;
-  while (attempts < 60) {
-    await new Promise(r => setTimeout(r, 5000));
-    try {
-      const res = await fetch(`/api/status/${taskId}`, { headers: { 'X-API-Key': apiKey }});
-      const data = await res.json();
-      if (data.status === 'completed' || data.output) {
-        status.innerHTML = '<div class="status success">✅ Selesai!</div>';
-        showResult(data);
-        document.getElementById('submitBtn').disabled = false;
-        document.getElementById('submitBtn').innerHTML = '🚀 Generate Video';
+async function poll(tid){
+  const s=document.getElementById('statusArea');
+  let n=0;
+  while(n<90){
+    await new Promise(r=>setTimeout(r,5000));
+    try{
+      const r=await fetch('/api/status/'+tid,{headers:{'X-API-Key':STORE.apiKey}});
+      const d=await r.json();
+      if(d.status==='completed'||d.output){
+        s.innerHTML='<div class="status-bar visible success">✅ Selesai!</div>';
+        show(d);
+        document.getElementById('submitBtn').disabled=false;
+        document.getElementById('submitBtn').innerHTML='<span>✦</span> Generate Video';
         return;
       }
-      if (data.status === 'failed') {
-        status.innerHTML = `<div class="status error">❌ Gagal: ${data.error || 'Unknown'}</div>`;
-        document.getElementById('submitBtn').disabled = false;
-        document.getElementById('submitBtn').innerHTML = '🚀 Generate Video';
-        return;
+      if(d.status==='failed'){
+        s.innerHTML=`<div class="status-bar visible error">❌ ${d.error||'Gagal'}</div>`; return;
       }
-      status.innerHTML = `<div class="status processing"><span class="spinner"></span> Processing... (${++attempts}/60)</div>`;
-    } catch(err) { status.innerHTML = `<div class="status error">❌ ${err.message}</div>`; return; }
+      n++;
+      s.innerHTML=`<div class="status-bar visible processing"><span class="spinner"></span>Processing... ${n}/90</div>`;
+    }catch(err){ s.innerHTML=`<div class="status-bar visible error">❌ ${err.message}</div>`; return; }
   }
-  status.innerHTML = `<div class="status error">⏰ Timeout — cek: ${taskId}</div>`;
+  s.innerHTML=`<div class="status-bar visible error">⏰ Timeout — task: ${tid}</div>`;
 }
 
-function showResult(data) {
-  const r = document.getElementById('resultArea');
-  const url = Array.isArray(data.output) ? data.output[0] : data.output;
-  if (url) r.innerHTML = `<div class="card result"><div class="card-title">🎬 Hasil</div><video controls autoplay loop><source src="${url}" type="video/mp4"></video><div class="meta">📥 <a href="${url}" target="_blank">Download</a></div></div>`;
+function show(d){
+  const url=Array.isArray(d.output)?d.output[0]:d.output;
+  if(!url) return;
+  document.getElementById('resultArea').innerHTML=`
+    <div class="result">
+      <div class="preview">
+        <video controls autoplay loop src="${url}"></video>
+        <div class="actions">
+          <a href="${url}" download>📥 Download</a>
+          <a href="${url}" target="_blank">🔗 Open</a>
+          <a href="#" onclick="navigator.clipboard.writeText('${url}');alert('Copied!')">📋 Copy URL</a>
+        </div>
+      </div>
+    </div>`;
 }
 
-function logout() { localStorage.removeItem('vai_apikey'); location.reload(); }
+function logout(){ localStorage.removeItem('vai_key'); location.reload(); }
 </script>
 </body>
 </html>
