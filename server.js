@@ -102,6 +102,9 @@ app.post('/api/generate', upload.fields([
   }
 });
 
+// Health check (for login validation)
+app.get('/api/health', (req, res) => res.json({ ok: true }));
+
 // Check task progress
 app.get('/api/status/:taskId', async (req, res) => {
   try {
