@@ -133,6 +133,16 @@ Contoh: A cinematic drone shot of a futuristic city at sunset, neon lights refle
           <option value="pro">Pro (lebih detail)</option>
         </select>
       </div>
+      <div class="card" style="flex:1;margin-bottom:0">
+        <div class="card-title">📐 Rasio</div>
+        <select id="aspectRatio">
+          <option value="16:9">16:9 · Landscape</option>
+          <option value="9:16">9:16 · Portrait</option>
+          <option value="1:1">1:1 · Square</option>
+          <option value="4:3">4:3</option>
+          <option value="3:4">3:4</option>
+        </select>
+      </div>
     </div>
 
     <button id="submitBtn" onclick="generate()">🚀 Generate Video</button>
@@ -161,6 +171,7 @@ async function generate() {
         model: document.getElementById('model').value,
         duration: document.getElementById('duration').value,
         mode: document.getElementById('mode').value,
+        aspectRatio: document.getElementById('aspectRatio').value,
       })
     });
     const data = await res.json();

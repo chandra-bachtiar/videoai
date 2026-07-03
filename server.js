@@ -25,7 +25,7 @@ app.get('/api/health', (req, res) => res.json({ ok: true }));
 // Submit generation
 app.post('/api/generate', async (req, res) => {
   try {
-    const { prompt, duration, model, mode } = req.body;
+    const { prompt, duration, model, mode, aspectRatio } = req.body;
     if (!prompt) return res.status(400).json({ error: 'Prompt wajib diisi' });
 
     const payload = {
@@ -33,7 +33,8 @@ app.post('/api/generate', async (req, res) => {
       model: model || 'kling-v3-omni',
       prompt,
       mode: mode || 'std',
-      duration: String(duration || 5)
+      duration: String(duration || 5),
+      aspect_ratio: aspectRatio || '16:9'
     };
 
     const result = await fetch(TR_API, {
