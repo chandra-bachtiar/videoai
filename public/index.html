@@ -11,7 +11,6 @@
     --border: #1e1e3a; --border-focus: #7c3aed; --purple: #a855f7;
     --purple-glow: #a855f740; --orange: #f97316; --text: #f0e8ff;
     --muted: #8880a8; --red: #ef4444; --green: #22c55e;
-    --radius: 16px;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
@@ -33,29 +32,21 @@
   .hero .grad{background:linear-gradient(135deg,#e9d5ff,#a855f7,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .hero p{color:var(--muted);font-size:1.05rem}
   
-  .prompt-wrap{border:1.5px solid var(--border);border-radius:var(--radius);background:var(--glass);backdrop-filter:blur(20px);margin-bottom:1.2rem;transition:border-color .2s,box-shadow .2s}
+  .prompt-wrap{border:1.5px solid var(--border);border-radius:16px;background:var(--glass);backdrop-filter:blur(20px);margin-bottom:1.2rem;transition:border-color .2s,box-shadow .2s}
   .prompt-wrap:focus-within{border-color:var(--border-focus);box-shadow:0 0 0 4px var(--purple-glow)}
   .prompt-wrap textarea{display:block;width:100%;min-height:160px;padding:1.3rem 1.2rem 2.5rem;background:transparent;border:none;color:var(--text);font:inherit;font-size:1rem;line-height:1.7;resize:none;outline:none;overflow:hidden;field-sizing:content}
   .prompt-wrap textarea::placeholder{color:var(--muted);opacity:.45}
   .prompt-meta{display:flex;justify-content:space-between;padding:.3rem 1.2rem .8rem;font-size:.72rem;color:var(--muted)}
   
   .controls{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.2rem}
-  .ctrl{position:relative;flex:1;min-width:130px}
-  .ctrl-label{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.35rem;padding-left:2px}
-  .ctrl-btn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:.75rem 1rem;background:var(--panel);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font:inherit;font-size:.9rem;font-weight:500;cursor:pointer;transition:border-color .2s}
-  .ctrl-btn:hover{border-color:var(--purple)}
-  .ctrl-btn::after{content:'';width:16px;height:16px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238880a8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center no-repeat;flex-shrink:0;transition:transform .2s}
-  .ctrl.open .ctrl-btn{border-color:var(--purple);border-radius:12px 12px 0 0}
-  .ctrl.open .ctrl-btn::after{transform:rotate(180deg)}
-  .ctrl-menu{display:none;position:absolute;left:0;right:0;top:100%;background:var(--panel);border:1.5px solid var(--purple);border-top:none;border-radius:0 0 12px 12px;z-index:10;overflow:hidden;max-height:220px;overflow-y:auto}
-  .ctrl.open .ctrl-menu{display:block}
-  .ctrl-menu div{padding:.65rem 1rem;cursor:pointer;font-size:.87rem;color:var(--muted);transition:all .15s}
-  .ctrl-menu div:hover{background:var(--purple-glow);color:var(--text)}
-  .ctrl-menu div.active{color:var(--purple);font-weight:600}
+  .ctrl{flex:1;min-width:130px}
+  .ctrl label{display:block;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.4rem;padding-left:2px}
+  .ctrl select{width:100%;padding:.75rem 2rem .75rem 1rem;background:var(--panel);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font:inherit;font-size:.9rem;font-weight:500;cursor:pointer;transition:border-color .2s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238880a8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center}
+  .ctrl select:hover{border-color:var(--purple)}
+  .ctrl select:focus{outline:none;border-color:var(--border-focus);box-shadow:0 0 0 3px var(--purple-glow)}
   
-  .btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:1.1rem;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:14px;font-size:1.05rem;font-weight:700;font-family:inherit;cursor:pointer;transition:all .25s;letter-spacing:-.01em}
+  .btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:1.1rem;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:14px;font-size:1.05rem;font-weight:700;font-family:inherit;cursor:pointer;transition:all .25s}
   .btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px #7c3aed50}
-  .btn:active:not(:disabled){transform:scale(.98)}
   .btn:disabled{opacity:.4;cursor:not-allowed}
   
   .status-bar{margin-top:1.5rem;padding:1rem 1.2rem;background:var(--panel);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:.75rem;font-size:.88rem;display:none}
@@ -74,7 +65,7 @@
   .result .act a:hover{background:var(--purple-glow);border-color:var(--purple)}
   
   .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
-  .login-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:3rem 2.5rem;max-width:420px;width:100%;text-align:center;backdrop-filter:blur(20px)}
+  .login-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:3rem 2.5rem;max-width:420px;width:100%;text-align:center;backdrop-filter:blur(20px)}
   .login-card .icon{font-size:2.5rem;margin-bottom:1rem}
   .login-card h2{font-size:1.5rem;margin-bottom:.5rem;font-weight:700}
   .login-card p{color:var(--muted);margin-bottom:1.8rem;font-size:.9rem;line-height:1.5}
@@ -115,79 +106,43 @@ async function doLogin(){
   }catch(err){let e=document.getElementById('e');e.textContent='Gagal koneksi';e.style.display='block'}
 }
 
-// Custom dropdowns
-const DROPS = [
-  {id:'model',label:'Model',opts:[
-    {v:'kling-v3-omni',t:'Kling 3 Omni'},
-    {v:'kling-3.0-turbo',t:'Kling 3 Turbo'},
-    {v:'kling-v3',t:'Kling v3'},
-    {v:'kling-v2-6',t:'Kling 2.6'},
-    {v:'MiniMax-Hailuo-2.3',t:'Hailuo 2.3'}
-  ]},
-  {id:'duration',label:'Durasi',opts:[{v:'5',t:'5 detik'},{v:'10',t:'10 detik'},{v:'15',t:'15 detik'}]},
-  {id:'mode',label:'Mode',opts:[{v:'std',t:'Standard'},{v:'pro',t:'Pro'}]},
-  {id:'aspect',label:'Rasio',opts:[{v:'16:9',t:'16:9 Landscape'},{v:'9:16',t:'9:16 Portrait'},{v:'1:1',t:'1:1 Square'},{v:'4:3',t:'4:3'},{v:'3:4',t:'3:4'}]}
-];
-
-DROPS.forEach(d=>{d.sel=d.opts[0];d.idx=0});
-
 function rApp(){
   const ak=AK;
   document.getElementById('root').innerHTML=`
     <div class="container">
       <div class="nav"><div class="logo"><span>🎬</span> Video<span>AI</span></div><div class="key-badge" onclick="logout()"><span class="dot"></span>${ak.slice(0,10)}...</div></div>
       <div class="hero"><h1>Create video with <span class="grad">AI</span></h1><p>Kling 3 Omni · Turbo · Hailuo</p></div>
-      <div class="prompt-wrap"><textarea id="prompt" placeholder="Deskripsikan video yang ingin dibuat...&#10;&#10;Contoh: A cinematic drone shot gliding through a futuristic cyberpunk city at night, neon lights reflecting on wet asphalt, slow smooth camera pan, atmospheric haze, 4K." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea><div class="prompt-meta"><span>Text-to-Video</span><span id="cc">0 char</span></div></div>
-      <div class="controls" id="ctrls"></div>
+      <div class="prompt-wrap"><textarea id="prompt" placeholder="Deskripsikan video yang ingin dibuat...&#10;&#10;Contoh: A cinematic drone shot gliding through a futuristic cyberpunk city at night, neon lights reflecting on wet asphalt, slow smooth camera pan, atmospheric haze, 4K." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';document.getElementById('cc').textContent=this.value.length+' char'"></textarea><div class="prompt-meta"><span>Text-to-Video</span><span id="cc">0 char</span></div></div>
+      <div class="controls">
+        <div class="ctrl"><label>Model</label><select id="model"><option value="kling-v3-omni">Kling 3 Omni</option><option value="kling-3.0-turbo">Kling 3 Turbo</option><option value="kling-v3">Kling v3</option><option value="kling-v2-6">Kling 2.6</option><option value="MiniMax-Hailuo-2.3">Hailuo 2.3</option></select></div>
+        <div class="ctrl"><label>Durasi</label><select id="duration"><option value="5">5 detik</option><option value="10">10 detik</option><option value="15">15 detik</option></select></div>
+        <div class="ctrl"><label>Mode</label><select id="mode"><option value="std">Standard</option><option value="pro">Pro</option></select></div>
+        <div class="ctrl"><label>Rasio</label><select id="aspect"><option value="16:9">16:9 Landscape</option><option value="9:16">9:16 Portrait</option><option value="1:1">1:1 Square</option><option value="4:3">4:3</option><option value="3:4">3:4</option></select></div>
+      </div>
       <button class="btn" id="sbtn" onclick="gen()"><span>✦</span> Generate Video</button>
       <div id="statusArea"></div><div id="resultArea"></div>
     </div>`;
-  
-  const prompt=document.getElementById('prompt');
-  prompt.addEventListener('input',function(){
+
+  document.getElementById('prompt').addEventListener('input',function(){
     this.style.height='auto';this.style.height=this.scrollHeight+'px';
-    document.getElementById('cc').textContent=this.value.length+' char';
   });
-  
-  const ctrls=document.getElementById('ctrls');
-  DROPS.forEach((d,i)=>{
-    const w=document.createElement('div');w.className='ctrl';
-    w.innerHTML=`<div class="ctrl-label">${d.label}</div><button class="ctrl-btn">${d.sel.t}</button><div class="ctrl-menu">${d.opts.map((o,j)=>`<div class="${j===0?'active':''}" data-idx="${j}">${o.t}</div>`).join('')}</div>`;
-    w.querySelector('.ctrl-btn').onclick=e=>{e.stopPropagation();toggleDrop(w)};
-    w.querySelectorAll('.ctrl-menu div').forEach(el=>el.onclick=()=>{selectDrop(w,d,parseInt(el.dataset.idx))});
-    ctrls.appendChild(w);
-  });
-  
-  document.addEventListener('click',()=>document.querySelectorAll('.ctrl.open').forEach(c=>c.classList.remove('open')));
 }
-
-function toggleDrop(w){
-  const was=w.classList.contains('open');
-  document.querySelectorAll('.ctrl.open').forEach(c=>c.classList.remove('open'));
-  if(!was) w.classList.add('open');
-}
-
-function selectDrop(w,d,idx){
-  d.idx=idx;d.sel=d.opts[idx];
-  w.querySelector('.ctrl-btn').textContent=d.sel.t;
-  w.querySelectorAll('.ctrl-menu div').forEach((el,i)=>el.classList.toggle('active',i===idx));
-  w.classList.remove('open');
-}
-
-function getVal(id){ return DROPS.find(d=>d.id===id).sel.v; }
 
 async function gen(){
   const p=document.getElementById('prompt').value.trim();
   if(!p) return alert('Masukkan prompt!');
-  
   const btn=document.getElementById('sbtn');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Generating...';
-  
   const s=document.getElementById('statusArea');
   s.innerHTML='<div class="status-bar on processing"><span class="spinner"></span>Mengirim ke TokenRouter...</div>';
-  
   try{
-    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':AK},body:JSON.stringify({prompt:p,model:getVal('model'),duration:getVal('duration'),mode:getVal('mode'),aspectRatio:getVal('aspect')})});
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':AK},body:JSON.stringify({
+      prompt:p,
+      model:document.getElementById('model').value,
+      duration:document.getElementById('duration').value,
+      mode:document.getElementById('mode').value,
+      aspectRatio:document.getElementById('aspect').value
+    })});
     const d=await r.json();
     if(d.task_id){s.innerHTML=`<div class="status-bar on processing"><span class="spinner"></span>Processing... <b>${d.task_id}</b></div>`;poll(d.task_id)}
     else if(d.error){s.innerHTML=`<div class="status-bar on error">❌ ${d.error.message||JSON.stringify(d.error)}</div>`;btn.disabled=false;btn.innerHTML='<span>✦</span> Generate Video'}
