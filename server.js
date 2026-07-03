@@ -61,7 +61,27 @@ app.get('/api/status/:taskId', async (req, res) => {
     const result = await fetch(`${TR_API}/${req.params.taskId}`, {
       headers: { 'Authorization': `Bearer ${req.trKey}` }
     });
-    const data = await result.json();
+    const raw = await result.json();
+
+    // Normalize TokenRouter response format
+    const data = {
+      status: raw.status || raw.data?.data?.task_status || raw.code || 'processing',
+      output: raw.result_url
+        || raw.data?.data?.task_result?.videos?.[0]?.url
+        || raw.output
+        || null,
+      progress: raw.progress || raw.data?.data?.task_status_msg || null,
+      error: raw.fail_reason || raw.message || raw.error || null
+    };
+
+    // Map to simple states
+    if (data.status === 'SUCCESS' || data.status === 'succeed' || data.status === 'success') {
+      data.status = 'completed';
+    }
+    if (!data.output && data.status === 'completed') {
+      data.status = 'processing'; // no video yet
+    }
+
     res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
