@@ -51,7 +51,7 @@ app.post('/api/generate', upload.fields([
     if (!prompt) return res.status(400).json({ error: 'Prompt wajib diisi' });
 
     const payload = {
-      model: model || 'kling-v2-6',
+      model: model || 'kling-v3-omni',
       prompt,
       images: [],
       audios: [],
