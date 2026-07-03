@@ -152,7 +152,7 @@ async function gen(){
 
 async function poll(tid){
   const s=document.getElementById('statusArea');let n=0;
-  while(n<90){await new Promise(r=>setTimeout(r,5000));
+  while(n<180){await new Promise(r=>setTimeout(r,5000));
     try{const r=await fetch('/api/status/'+tid,{headers:{'X-API-Key':AK}});const d=await r.json();
       if(d.status==='completed'||d.output){s.innerHTML='<div class="status-bar on success">✅ Selesai!</div>';show(d);document.getElementById('sbtn').disabled=false;document.getElementById('sbtn').innerHTML='<span>✦</span> Generate Video';return}
       if(d.status==='failed'){s.innerHTML=`<div class="status-bar on error">❌ ${d.error||'Gagal'}</div>`;return}
