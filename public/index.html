@@ -84,7 +84,7 @@ if(!AK) rLogin(); else rApp();
 
 // ---- HISTORY ----
 let HISTORY = [];
-try { HISTORY = JSON.parse(localS...ks')||[]; } catch(e){}
+try { HISTORY = JSON.parse(localStorage.getItem('vai_tasks')||'[]'); } catch(e){}
 
 function saveTask(id, prompt, model, duration, status){
   HISTORY = HISTORY.filter(t => t.id !== id);
