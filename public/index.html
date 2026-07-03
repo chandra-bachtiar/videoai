@@ -14,41 +14,33 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-  
   .glow-top{position:fixed;top:-200px;left:50%;translate:-50% 0;width:600px;height:400px;background:radial-gradient(circle,#7c3aed22,transparent 70%);pointer-events:none;z-index:0}
   .glow-bottom{position:fixed;bottom:-200px;left:50%;translate:-50% 0;width:500px;height:300px;background:radial-gradient(circle,#f9731610,transparent 70%);pointer-events:none;z-index:0}
-  
   .container{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:3rem 1.5rem 6rem}
-  
   .nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem}
-  .logo{font-size:1.35rem;font-weight:800;letter-spacing:-.02em}
+  .logo{font-size:1.35rem;font-weight:800}
   .logo span{background:linear-gradient(135deg,#c084fc,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .key-badge{display:flex;align-items:center;gap:.5rem;padding:.4rem .9rem;background:var(--panel);border:1px solid var(--border);border-radius:99px;font-size:.78rem;color:var(--muted);cursor:pointer}
   .key-badge:hover{border-color:var(--purple)}
   .key-badge .dot{width:6px;height:6px;background:var(--green);border-radius:50%}
-  
   .hero{text-align:center;margin-bottom:2.5rem}
   .hero h1{font-size:2.8rem;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:.3rem}
   .hero .grad{background:linear-gradient(135deg,#e9d5ff,#a855f7,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .hero p{color:var(--muted);font-size:1.05rem}
-  
   .prompt-wrap{border:1.5px solid var(--border);border-radius:16px;background:var(--glass);backdrop-filter:blur(20px);margin-bottom:1.2rem;transition:border-color .2s,box-shadow .2s}
   .prompt-wrap:focus-within{border-color:var(--border-focus);box-shadow:0 0 0 4px var(--purple-glow)}
   .prompt-wrap textarea{display:block;width:100%;min-height:160px;padding:1.3rem 1.2rem 2.5rem;background:transparent;border:none;color:var(--text);font:inherit;font-size:1rem;line-height:1.7;resize:none;outline:none;overflow:hidden;field-sizing:content}
   .prompt-wrap textarea::placeholder{color:var(--muted);opacity:.45}
   .prompt-meta{display:flex;justify-content:space-between;padding:.3rem 1.2rem .8rem;font-size:.72rem;color:var(--muted)}
-  
   .controls{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.2rem}
   .ctrl{flex:1;min-width:130px}
   .ctrl label{display:block;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.4rem;padding-left:2px}
   .ctrl select{width:100%;padding:.75rem 2rem .75rem 1rem;background:var(--panel);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font:inherit;font-size:.9rem;font-weight:500;cursor:pointer;transition:border-color .2s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238880a8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center}
   .ctrl select:hover{border-color:var(--purple)}
   .ctrl select:focus{outline:none;border-color:var(--border-focus);box-shadow:0 0 0 3px var(--purple-glow)}
-  
   .btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:1.1rem;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:14px;font-size:1.05rem;font-weight:700;font-family:inherit;cursor:pointer;transition:all .25s}
   .btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px #7c3aed50}
   .btn:disabled{opacity:.4;cursor:not-allowed}
-  
   .status-bar{margin-top:1.5rem;padding:1rem 1.2rem;background:var(--panel);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:.75rem;font-size:.88rem;display:none}
   .status-bar.on{display:flex}
   .status-bar.processing{border-color:var(--orange);color:var(--orange)}
@@ -56,14 +48,20 @@
   .status-bar.error{border-color:var(--red);color:var(--red)}
   .spinner{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
   @keyframes spin{to{transform:rotate(360deg)}}
-  
   .result{margin-top:1.5rem}
   .result .prev{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
   .result video{width:100%;display:block}
   .result .act{display:flex;gap:.5rem;padding:1rem}
   .result .act a{flex:1;text-align:center;padding:.6rem;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
   .result .act a:hover{background:var(--purple-glow);border-color:var(--purple)}
-  
+  .history{margin-top:2rem;border-top:1px solid var(--border);padding-top:1.5rem}
+  .history .title{font-size:.85rem;color:var(--muted);margin-bottom:.8rem;font-weight:600}
+  .h-item{display:flex;justify-content:space-between;align-items:center;padding:.6rem .8rem;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:.4rem;cursor:pointer;transition:border-color .2s}
+  .h-item:hover{border-color:var(--purple)}
+  .h-item .hi-left{flex:1;min-width:0}
+  .h-item .hi-prompt{font-size:.8rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .h-item .hi-meta{font-size:.68rem;color:var(--muted);margin-top:.15rem}
+  .h-item .hi-id{font-size:.7rem;color:var(--muted);flex-shrink:0;margin-left:.5rem}
   .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
   .login-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:3rem 2.5rem;max-width:420px;width:100%;text-align:center;backdrop-filter:blur(20px)}
   .login-card .icon{font-size:2.5rem;margin-bottom:1rem}
@@ -73,7 +71,6 @@
   .login-card input:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px var(--purple-glow)}
   .login-card button{margin-top:1rem}
   .login-card .error{color:var(--red);margin-top:.8rem;font-size:.82rem}
-  
   @media(max-width:600px){.container{padding:1.5rem 1rem 4rem}.hero h1{font-size:1.8rem}.ctrl{min-width:100%;flex:auto}}
 </style>
 </head>
@@ -84,6 +81,35 @@
 <script>
 const AK = localStorage.getItem('vai_key');
 if(!AK) rLogin(); else rApp();
+
+// ---- HISTORY ----
+let HISTORY = [];
+try { HISTORY = JSON.parse(localS...ks')||[]; } catch(e){}
+
+function saveTask(id, prompt, model, duration, status){
+  HISTORY = HISTORY.filter(t => t.id !== id);
+  HISTORY.unshift({id, prompt:prompt.slice(0,80), model, duration, status, time:Date.now()});
+  if(HISTORY.length > 20) HISTORY.length = 20;
+  localStorage.setItem('vai_tasks', JSON.stringify(HISTORY));
+}
+
+function renderHistory(){
+  if(!HISTORY.length) return '';
+  let h = '<div class="history"><div class="title">📋 Riwayat Task</div>';
+  HISTORY.forEach(t => {
+    h += `<div class="h-item" onclick="recheck('${t.id}')">
+      <div class="hi-left"><div class="hi-prompt">${t.prompt.replace(/</g,'<')}</div>
+      <div class="hi-meta">${t.model} · ${t.duration}s · ${t.status} · ${new Date(t.time).toLocaleTimeString('id')}</div></div>
+      <span class="hi-id">${t.id.slice(0,10)}...</span></div>`;
+  });
+  h += '</div>';
+  return h;
+}
+
+function recheck(tid){
+  document.getElementById('statusArea').innerHTML = `<div class="status-bar on processing"><span class="spinner"></span> Mengecek ${tid.slice(0,12)}...</div>`;
+  poll(tid);
+}
 
 function rLogin(){
   document.getElementById('root').innerHTML=`
@@ -107,10 +133,9 @@ async function doLogin(){
 }
 
 function rApp(){
-  const ak=AK;
   document.getElementById('root').innerHTML=`
     <div class="container">
-      <div class="nav"><div class="logo"><span>🎬</span> Video<span>AI</span></div><div class="key-badge" onclick="logout()"><span class="dot"></span>${ak.slice(0,10)}...</div></div>
+      <div class="nav"><div class="logo"><span>🎬</span> Video<span>AI</span></div><div class="key-badge" onclick="logout()"><span class="dot"></span>${AK.slice(0,10)}...</div></div>
       <div class="hero"><h1>Create video with <span class="grad">AI</span></h1><p>Kling 3 Omni · Turbo · Hailuo</p></div>
       <div class="prompt-wrap"><textarea id="prompt" placeholder="Deskripsikan video yang ingin dibuat...&#10;&#10;Contoh: A cinematic drone shot gliding through a futuristic cyberpunk city at night, neon lights reflecting on wet asphalt, slow smooth camera pan, atmospheric haze, 4K." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';document.getElementById('cc').textContent=this.value.length+' char'"></textarea><div class="prompt-meta"><span>Text-to-Video</span><span id="cc">0 char</span></div></div>
       <div class="controls">
@@ -121,11 +146,9 @@ function rApp(){
       </div>
       <button class="btn" id="sbtn" onclick="gen()"><span>✦</span> Generate Video</button>
       <div id="statusArea"></div><div id="resultArea"></div>
+      ${renderHistory()}
     </div>`;
-
-  document.getElementById('prompt').addEventListener('input',function(){
-    this.style.height='auto';this.style.height=this.scrollHeight+'px';
-  });
+  document.getElementById('prompt').addEventListener('input',function(){this.style.height='auto';this.style.height=this.scrollHeight+'px'});
 }
 
 async function gen(){
@@ -135,30 +158,49 @@ async function gen(){
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Generating...';
   const s=document.getElementById('statusArea');
   s.innerHTML='<div class="status-bar on processing"><span class="spinner"></span>Mengirim ke TokenRouter...</div>';
+  const model = document.getElementById('model').value;
+  const duration = document.getElementById('duration').value;
   try{
-    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':AK},body:JSON.stringify({
-      prompt:p,
-      model:document.getElementById('model').value,
-      duration:document.getElementById('duration').value,
-      mode:document.getElementById('mode').value,
-      aspectRatio:document.getElementById('aspect').value
-    })});
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':AK},body:JSON.stringify({prompt:p,model,duration,mode:document.getElementById('mode').value,aspectRatio:document.getElementById('aspect').value})});
     const d=await r.json();
-    if(d.task_id){s.innerHTML=`<div class="status-bar on processing"><span class="spinner"></span>Processing... <b>${d.task_id}</b></div>`;poll(d.task_id)}
-    else if(d.error){s.innerHTML=`<div class="status-bar on error">❌ ${d.error.message||JSON.stringify(d.error)}</div>`;btn.disabled=false;btn.innerHTML='<span>✦</span> Generate Video'}
-    else{s.innerHTML='<div class="status-bar on success">✅ Selesai!</div>';show(d);btn.disabled=false;btn.innerHTML='<span>✦</span> Generate Video'}
-  }catch(err){s.innerHTML=`<div class="status-bar on error">❌ ${err.message}</div>`;btn.disabled=false;btn.innerHTML='<span>✦</span> Generate Video'}
+    if(d.task_id){
+      saveTask(d.task_id, p, model, duration, 'processing');
+      s.innerHTML=`<div class="status-bar on processing"><span class="spinner"></span>Processing... <b>${d.task_id}</b></div>`;
+      poll(d.task_id);
+    }else if(d.error){
+      s.innerHTML=`<div class="status-bar on error">❌ ${d.error.message||JSON.stringify(d.error)}</div>`;
+      btn.disabled=false;btn.innerHTML='<span>✦</span> Generate Video';
+    }else{
+      s.innerHTML='<div class="status-bar on success">✅ Selesai!</div>';show(d);
+      btn.disabled=false;btn.innerHTML='<span>✦</span> Generate Video';
+    }
+  }catch(err){
+    s.innerHTML=`<div class="status-bar on error">❌ ${err.message}</div>`;
+    btn.disabled=false;btn.innerHTML='<span>✦</span> Generate Video';
+  }
 }
 
 async function poll(tid){
   const s=document.getElementById('statusArea');let n=0;
+  const model = document.getElementById('model')?.value||'';
+  const duration = document.getElementById('duration')?.value||'5';
   while(n<180){await new Promise(r=>setTimeout(r,5000));
-    try{const r=await fetch('/api/status/'+tid,{headers:{'X-API-Key':AK}});const d=await r.json();
-      if(d.status==='completed'||d.output){s.innerHTML='<div class="status-bar on success">✅ Selesai!</div>';show(d);document.getElementById('sbtn').disabled=false;document.getElementById('sbtn').innerHTML='<span>✦</span> Generate Video';return}
-      if(d.status==='failed'){s.innerHTML=`<div class="status-bar on error">❌ ${d.error||'Gagal'}</div>`;return}
-      n++;s.innerHTML=`<div class="status-bar on processing"><span class="spinner"></span>Processing... ${n}/90</div>`;
+    try{
+      const r=await fetch('/api/status/'+tid,{headers:{'X-API-Key':AK}});const d=await r.json();
+      if(d.status==='completed'||d.output){
+        saveTask(tid,'','', '', 'done');
+        s.innerHTML='<div class="status-bar on success">✅ Selesai!</div>';show(d);
+        document.getElementById('sbtn').disabled=false;document.getElementById('sbtn').innerHTML='<span>✦</span> Generate Video';return;
+      }
+      if(d.status==='failed'){
+        saveTask(tid,'','', '', 'gagal');
+        s.innerHTML=`<div class="status-bar on error">❌ ${d.error||'Gagal'}</div>`;return;
+      }
+      n++;s.innerHTML=`<div class="status-bar on processing"><span class="spinner"></span>Processing... ${n}/180</div>`;
     }catch(err){s.innerHTML=`<div class="status-bar on error">❌ ${err.message}</div>`;return}
-  }s.innerHTML=`<div class="status-bar on error">⏰ Timeout — ${tid}</div>`;
+  }
+  saveTask(tid,'','', '', 'timeout');
+  s.innerHTML=`<div class="status-bar on error">⏰ Timeout — ${tid}</div>`;
 }
 
 function show(d){
