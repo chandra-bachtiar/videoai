@@ -7,81 +7,45 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a14;
-    --surface: #141428;
-    --surface2: #1e1e38;
-    --border: #2a2a4a;
-    --primary: #a855f7;
-    --primary-glow: #a855f744;
-    --accent: #f97316;
-    --text: #e8e0f0;
-    --text2: #8b80a0;
-    --danger: #ef4444;
-    --radius: 14px;
+    --bg: #0a0a14; --surface: #141428; --surface2: #1e1e38; --border: #2a2a4a;
+    --primary: #a855f7; --primary-glow: #a855f744; --accent: #f97316;
+    --text: #e8e0f0; --text2: #8b80a0; --danger: #ef4444; --radius: 14px;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
   body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -20%,#7c3aed12,#0000 60%),radial-gradient(ellipse 40% 50% at 80% 80%,#f9731608,#0000 50%);pointer-events:none;z-index:0}
-  
-  .app{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:2rem}
-  
-  .header{text-align:center;margin-bottom:2.5rem}
-  .header h1{font-size:2.4rem;font-weight:700;background:linear-gradient(135deg,#c084fc,#a855f7,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.02em}
-  .header p{color:var(--text2);margin-top:.5rem;font-size:1.05rem}
-  .header .badge{display:inline-block;margin-top:.8rem;padding:.3rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:99px;font-size:.8rem;color:var(--text2)}
-  
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem;backdrop-filter:blur(10px)}
-  .card-title{font-size:1.1rem;font-weight:600;margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;color:var(--text)}
-  .card-title .icon{font-size:1.3rem}
-  
-  label{display:block;font-size:.85rem;font-weight:500;color:var(--text2);margin-bottom:.4rem}
-  textarea,input[type="text"],select{width:100%;padding:.85rem 1rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:.95rem;transition:border-color .2s}
-  textarea{resize:vertical;min-height:110px;line-height:1.6}
-  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
-  
-  .upload-zone{border:2px dashed var(--border);border-radius:12px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;position:relative}
-  .upload-zone:hover{border-color:var(--primary);background:var(--surface2)}
-  .upload-zone .icon{font-size:2rem;margin-bottom:.5rem}
-  .upload-zone p{color:var(--text2);font-size:.9rem}
-  .upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer}
-  .upload-zone.has-files{border-color:var(--primary);border-style:solid}
-  
-  .preview-grid{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem}
-  .preview-item{position:relative;width:90px;height:90px;border-radius:10px;overflow:hidden;border:2px solid var(--border)}
-  .preview-item img,.preview-item video{width:100%;height:100%;object-fit:cover}
-  .preview-item .tag{position:absolute;top:4px;left:4px;background:#000000aa;color:#fff;font-size:.65rem;padding:2px 6px;border-radius:4px;font-weight:600;backdrop-filter:blur(4px)}
-  .preview-item .remove{position:absolute;top:2px;right:2px;width:20px;height:20px;background:var(--danger);color:#fff;border:none;border-radius:50%;font-size:.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
-  .preview-item:hover .remove{opacity:1}
-  
-  .row{display:flex;gap:1rem;flex-wrap:wrap}
+  .app{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:2rem}
+  .header{text-align:center;margin-bottom:2rem}
+  .header h1{font-size:2.4rem;font-weight:700;background:linear-gradient(135deg,#c084fc,#a855f7,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .header p{color:var(--text2);margin-top:.4rem}
+  .header .badge{margin-top:.6rem;padding:.25rem .8rem;background:var(--surface2);border:1px solid var(--border);border-radius:99px;font-size:.78rem;color:var(--text2);display:inline-block}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1.2rem}
+  .card-title{font-size:1.05rem;font-weight:600;margin-bottom:1rem;color:var(--text)}
+  textarea,select{width:100%;padding:.85rem 1rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:.95rem;transition:border-color .2s}
+  textarea{resize:vertical;min-height:140px;line-height:1.65}
+  textarea:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+  .row{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
   .row>*{flex:1;min-width:140px}
-  
-  button{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.9rem 2rem;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:12px;font-size:1.05rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
+  button{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:1rem 2rem;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:12px;font-size:1.05rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
   button:hover{transform:translateY(-1px);box-shadow:0 8px 30px var(--primary-glow)}
   button:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-  .btn-secondary{background:var(--surface2);border:1.5px solid var(--border);color:var(--text);font-weight:500}
-  .btn-secondary:hover{box-shadow:none;border-color:var(--primary)}
-  
   .status{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;margin:1rem 0;display:flex;align-items:center;gap:.8rem;font-size:.9rem}
   .status.processing{border-color:var(--accent);color:var(--accent)}
   .status.success{border-color:#22c55e;color:#22c55e}
   .status.error{border-color:var(--danger);color:var(--danger)}
   .spinner{width:18px;height:18px;border:2.5px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
   @keyframes spin{to{transform:rotate(360deg)}}
-  
   .result video{border-radius:12px;width:100%;margin-top:.5rem}
   .result .meta{color:var(--text2);font-size:.85rem;margin-top:.8rem}
-  .result .meta a{color:var(--accent)}
-  
-  .tips{font-size:.8rem;color:var(--text2);margin-top:.3rem}
-  .tips code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.8rem;color:var(--primary)}
-  
   .login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
   .login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2.5rem;max-width:420px;width:100%;text-align:center}
   .login-card h2{font-size:1.5rem;margin-bottom:.5rem}
   .login-card p{color:var(--text2);margin-bottom:1.5rem;font-size:.9rem}
-  
+  .login-card input{width:100%;padding:.85rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:.95rem;text-align:center}
+  .login-card button{width:100%;margin-top:1rem}
   .footer{text-align:center;padding:2rem;color:var(--text2);font-size:.8rem;border-top:1px solid var(--border);margin-top:2rem}
+  .footer a{color:var(--primary)}
+  .hint{font-size:.78rem;color:var(--text2);margin-top:.3rem}
 </style>
 </head>
 <body>
@@ -90,7 +54,6 @@
 
 <script>
 let apiKey = localStorage.getItem('vai_apikey');
-let uploadedRefs = { images: [], audios: [], videos: [] };
 
 if (!apiKey) renderLogin();
 else renderApp();
@@ -100,10 +63,10 @@ function renderLogin() {
     <div class="login-page">
       <div class="login-card">
         <h2>🔑 TokenRouter API Key</h2>
-        <p>Masukkan API key TokenRouter untuk generate video. Key disimpan di browser kamu.</p>
-        <input id="keyInput" type="password" placeholder="sk-..." style="text-align:center;font-size:1.05rem">
-        <p style="font-size:.75rem;color:var(--text2);margin:.3rem 0 1rem">Dapat dari <a href="https://tokenrouter.com" target="_blank" style="color:var(--primary)">tokenrouter.com</a></p>
-        <button onclick="doLogin()" style="width:100%">Simpan & Lanjutkan</button>
+        <p>Masukkan API key TokenRouter untuk generate video AI.</p>
+        <input id="keyInput" type="password" placeholder="sk-...">
+        <p class="hint">Dapat dari <a href="https://tokenrouter.com" target="_blank" style="color:var(--primary)">tokenrouter.com</a></p>
+        <button onclick="doLogin()">Simpan & Lanjutkan</button>
         <p id="loginError" style="color:var(--danger);margin-top:.8rem;font-size:.85rem;display:none"></p>
       </div>
     </div>`;
@@ -113,17 +76,14 @@ async function doLogin() {
   const key = document.getElementById('keyInput').value.trim();
   if (!key.startsWith('sk-')) {
     document.getElementById('loginError').textContent = 'Format: sk-...';
-    document.getElementById('loginError').style.display = 'block';
-    return;
+    document.getElementById('loginError').style.display = 'block'; return;
   }
   try {
     const res = await fetch('/api/health', { headers: { 'X-API-Key': key }});
     if (res.status === 401) {
-      document.getElementById('loginError').textContent = 'Key tidak valid atau server error';
-      document.getElementById('loginError').style.display = 'block';
-      return;
+      document.getElementById('loginError').textContent = 'Key tidak valid';
+      document.getElementById('loginError').style.display = 'block'; return;
     }
-    apiKey = key;
     localStorage.setItem('vai_apikey', key);
     location.reload();
   } catch(e) {
@@ -136,72 +96,41 @@ function renderApp() {
   document.getElementById('app').innerHTML = `
     <div class="header">
       <h1>🎬 VideoAI Generator</h1>
-      <p>Generate video dengan Kling, Qwen, Hailuo & HappyHorse</p>
+      <p>Kling 3 Omni · Kling Turbo · Hailuo 2.3</p>
       <span class="badge">${apiKey.substring(0,8)}... · <a href="#" onclick="logout()" style="color:var(--text2)">ganti</a></span>
     </div>
 
     <div class="card">
-      <div class="card-title"><span class="icon">📝</span> Prompt</div>
+      <div class="card-title">📝 Prompt</div>
       <textarea id="prompt" placeholder="Deskripsikan video yang mau dibuat...
-Contoh: A cinematic shot of [Image 1] transforming into a futuristic city, with [Audio 1] as background music. First frame: [Image 2], last frame: [Image 1]."></textarea>
-      <p class="tips">Gunakan <code>[Image 1]</code>, <code>[Audio 1]</code>, <code>[Video 1]</code> untuk mereferensi file yang di-upload.</p>
+Contoh: A cinematic drone shot of a futuristic city at sunset, neon lights reflecting on wet streets, slow camera pan, 4K quality."></textarea>
+      <p class="hint">Text-to-video — makin detail deskripsi, makin bagus hasilnya.</p>
     </div>
 
-    <div class="row" style="margin-bottom:1.5rem">
+    <div class="row">
       <div class="card" style="flex:1;margin-bottom:0">
-        <div class="card-title"><span class="icon">🖼️</span> Gambar <span style="font-weight:400;color:var(--text2);font-size:.8rem">· ${uploadedRefs.images.length}/5</span></div>
-        <div class="upload-zone${uploadedRefs.images.length?' has-files':''}" id="imgZone">
-          ${uploadedRefs.images.length ? '' : '<span class="icon">📁</span><p>Klik atau drop gambar di sini</p>'}
-          <input type="file" id="imgInput" multiple accept="image/*" onchange="handleUpload('images',this)">
-        </div>
-        <div class="preview-grid" id="imgPreview">${renderPreviews('images')}</div>
-      </div>
-    </div>
-
-    <div class="row" style="margin-bottom:1.5rem">
-      <div class="card" style="flex:1;margin-bottom:0">
-        <div class="card-title"><span class="icon">🎵</span> Audio <span style="font-weight:400;color:var(--text2);font-size:.8rem">· ${uploadedRefs.audios.length}/3</span></div>
-        <div class="upload-zone${uploadedRefs.audios.length?' has-files':''}" id="audioZone">
-          ${uploadedRefs.audios.length ? '' : '<span class="icon">🎧</span><p>Klik atau drop audio di sini</p>'}
-          <input type="file" id="audioInput" multiple accept="audio/*" onchange="handleUpload('audios',this)">
-        </div>
-        <div class="preview-grid" id="audioPreview">${renderPreviews('audios')}</div>
-      </div>
-      <div class="card" style="flex:1;margin-bottom:0">
-        <div class="card-title"><span class="icon">🎥</span> Video <span style="font-weight:400;color:var(--text2);font-size:.8rem">· ${uploadedRefs.videos.length}/3</span></div>
-        <div class="upload-zone${uploadedRefs.videos.length?' has-files':''}" id="videoZone">
-          ${uploadedRefs.videos.length ? '' : '<span class="icon">🎬</span><p>Klik atau drop video di sini</p>'}
-          <input type="file" id="videoInput" multiple accept="video/*" onchange="handleUpload('videos',this)">
-        </div>
-        <div class="preview-grid" id="videoPreview">${renderPreviews('videos')}</div>
-      </div>
-    </div>
-
-    <div class="row" style="margin-bottom:1.5rem">
-      <div class="card" style="flex:1;margin-bottom:0">
-        <div class="card-title"><span class="icon">🤖</span> Model</div>
+        <div class="card-title">🤖 Model</div>
         <select id="model">
-          <option value="kling-v3-omni">🎬 Kling 3 Omni</option>
-          <option value="kling-3.0-turbo">⚡ Kling 3.0 Turbo</option>
+          <option value="kling-v3-omni">🎬 Kling 3 Omni (best)</option>
+          <option value="kling-3.0-turbo">⚡ Kling 3.0 Turbo (fast)</option>
           <option value="kling-v3">🎥 Kling v3</option>
           <option value="kling-v2-6">🎞️ Kling 2.6</option>
           <option value="MiniMax-Hailuo-2.3">🌊 Hailuo 2.3</option>
         </select>
       </div>
       <div class="card" style="flex:1;margin-bottom:0">
-        <div class="card-title"><span class="icon">⏱️</span> Durasi</div>
+        <div class="card-title">⏱️ Durasi</div>
         <select id="duration">
           <option value="5">5 detik</option>
-          <option value="8">8 detik</option>
           <option value="10">10 detik</option>
           <option value="15">15 detik</option>
         </select>
       </div>
       <div class="card" style="flex:1;margin-bottom:0">
-        <div class="card-title"><span class="icon">📐</span> Resolusi</div>
-        <select id="resolution">
-          <option value="720p">720p</option>
-          <option value="1080p">1080p</option>
+        <div class="card-title">🎯 Mode</div>
+        <select id="mode">
+          <option value="std">Standard</option>
+          <option value="pro">Pro (lebih detail)</option>
         </select>
       </div>
     </div>
@@ -209,37 +138,8 @@ Contoh: A cinematic shot of [Image 1] transforming into a futuristic city, with 
     <button id="submitBtn" onclick="generate()">🚀 Generate Video</button>
     <div id="statusArea"></div>
     <div id="resultArea"></div>
+    <div class="footer">VideoAI · Powered by <a href="https://tokenrouter.com" target="_blank">TokenRouter</a></div>
   `;
-}
-
-function handleUpload(type, input) {
-  const files = [...input.files];
-  files.forEach(f => {
-    if (uploadedRefs[type].length >= (type==='images'?5:3)) return;
-    f._previewUrl = URL.createObjectURL(f);
-    f._refTag = type==='images' ? `[Image ${uploadedRefs[type].length+1}]` :
-                type==='audios' ? `[Audio ${uploadedRefs[type].length+1}]` : `[Video ${uploadedRefs[type].length+1}]`;
-    uploadedRefs[type].push(f);
-  });
-  renderApp();
-}
-
-function removeRef(type, idx) {
-  uploadedRefs[type].splice(idx, 1);
-  // re-index tags
-  uploadedRefs[type].forEach((f,i) => {
-    f._refTag = type==='images' ? `[Image ${i+1}]` : type==='audios' ? `[Audio ${i+1}]` : `[Video ${i+1}]`;
-  });
-  renderApp();
-}
-
-function renderPreviews(type) {
-  return uploadedRefs[type].map((f,i) => `
-    <div class="preview-item">
-      ${f.type.startsWith('video') ? `<video src="${f._previewUrl}" muted></video>` : `<img src="${f._previewUrl}" alt="">`}
-      <span class="tag">${f._refTag}</span>
-      <button class="remove" onclick="event.stopPropagation();removeRef('${type}',${i})">×</button>
-    </div>`).join('');
 }
 
 async function generate() {
@@ -250,20 +150,19 @@ async function generate() {
   const status = document.getElementById('statusArea');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Generating...';
-  status.innerHTML = '<div class="status processing"><span class="spinner"></span> Uploading & submitting...</div>';
-
-  const fd = new FormData();
-  fd.append('prompt', prompt);
-  fd.append('duration', document.getElementById('duration').value);
-  fd.append('resolution', document.getElementById('resolution').value);
-  fd.append('model', document.getElementById('model').value);
-
-  ['images','audios','videos'].forEach(type => {
-    uploadedRefs[type].forEach(f => fd.append(type, f));
-  });
+  status.innerHTML = '<div class="status processing"><span class="spinner"></span> Mengirim...</div>';
 
   try {
-    const res = await fetch('/api/generate', { method: 'POST', body: fd, headers: { 'X-API-Key': apiKey }});
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+      body: JSON.stringify({
+        prompt,
+        model: document.getElementById('model').value,
+        duration: document.getElementById('duration').value,
+        mode: document.getElementById('mode').value,
+      })
+    });
     const data = await res.json();
 
     if (data.task_id) {
@@ -299,33 +198,24 @@ async function pollStatus(taskId) {
         return;
       }
       if (data.status === 'failed') {
-        status.innerHTML = `<div class="status error">❌ Gagal: ${data.error || 'Unknown error'}</div>`;
+        status.innerHTML = `<div class="status error">❌ Gagal: ${data.error || 'Unknown'}</div>`;
         document.getElementById('submitBtn').disabled = false;
         document.getElementById('submitBtn').innerHTML = '🚀 Generate Video';
         return;
       }
       status.innerHTML = `<div class="status processing"><span class="spinner"></span> Processing... (${++attempts}/60)</div>`;
-    } catch(err) { status.innerHTML = `<div class="status error">❌ Poll error: ${err.message}</div>`; return; }
+    } catch(err) { status.innerHTML = `<div class="status error">❌ ${err.message}</div>`; return; }
   }
-  status.innerHTML = `<div class="status error">⏰ Timeout — cek manual: ${taskId}</div>`;
+  status.innerHTML = `<div class="status error">⏰ Timeout — cek: ${taskId}</div>`;
 }
 
 function showResult(data) {
   const r = document.getElementById('resultArea');
   const url = Array.isArray(data.output) ? data.output[0] : data.output;
-  if (url) r.innerHTML = `
-    <div class="card result">
-      <div class="card-title"><span class="icon">🎬</span> Hasil Video</div>
-      <video controls autoplay loop><source src="${url}" type="video/mp4"></video>
-      <div class="meta">📥 <a href="${url}" target="_blank">Download</a></div>
-    </div>`;
+  if (url) r.innerHTML = `<div class="card result"><div class="card-title">🎬 Hasil</div><video controls autoplay loop><source src="${url}" type="video/mp4"></video><div class="meta">📥 <a href="${url}" target="_blank">Download</a></div></div>`;
 }
 
-function logout() {
-  localStorage.removeItem('vai_apikey');
-  location.reload();
-}
+function logout() { localStorage.removeItem('vai_apikey'); location.reload(); }
 </script>
-<div class="footer">VideoAI · Powered by Dreamina Seedance · <a href="https://tokenrouter.com" target="_blank" style="color:var(--primary)">TokenRouter</a></div>
 </body>
 </html>
