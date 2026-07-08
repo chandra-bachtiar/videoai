@@ -151,17 +151,35 @@ app.get('/api/status/:taskId', async (req, res) => {
     });
     const raw = await result.json();
 
-    // Extract from nested formats
+    // Log raw response for debugging
+    console.log('[status] raw:', JSON.stringify(raw).slice(0, 500));
+
+    // Extract from nested formats — try every known shape
     const inner = raw.data || raw;
     const status = inner.status || raw.status || 'processing';
-    const output = inner.result_url
-      || inner.task_result?.videos?.[0]?.url
-      || raw.result_url
-      || null;
-    const progress = inner.progress || null;
+
+    // Try multiple output URL locations
+    const output =
+      // happyhorse format
+      inner.output?.video_url ||
+      inner.output?.url ||
+      inner.video_url ||
+      // kling format
+      inner.result_url ||
+      inner.task_result?.videos?.[0]?.url ||
+      // top-level fallbacks
+      raw.result_url ||
+      raw.output?.video_url ||
+      raw.output?.url ||
+      raw.video_url ||
+      raw.data?.result_url ||
+      raw.data?.output?.video_url ||
+      null;
+
+    const progress = inner.progress || raw.progress || null;
 
     res.json({
-      status: (status === 'SUCCESS' || status === 'succeed') ? 'completed'
+      status: (status === 'SUCCESS' || status === 'succeed' || status === 'completed') ? 'completed'
         : (status === 'FAILURE' || status === 'failed') ? 'failed'
         : 'processing',
       output,
