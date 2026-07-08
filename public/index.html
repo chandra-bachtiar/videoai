@@ -154,10 +154,19 @@ function rApp(){
       <div id="generate" class="page active">
         <div class="prompt-box"><textarea id="prompt" placeholder="Deskripsikan video yang ingin dibuat...&#10;&#10;Contoh: A cinematic drone shot gliding through a futuristic cyberpunk city at night, neon lights reflecting on wet asphalt, slow smooth camera pan, atmospheric haze." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea><div class="prompt-meta"><span>Text-to-Video</span></div></div>
         <div class="ctrls">
-          <div class="ctrl"><label>Model</label><select id="model"><option value="kling-v3-omni">Kling 3 Omni</option><option value="kling-3.0-turbo">Kling 3 Turbo</option><option value="kling-v3">Kling v3</option><option value="kling-v2-6">Kling 2.6</option><option value="MiniMax-Hailuo-2.3">Hailuo 2.3</option></select></div>
+          <div class="ctrl"><label>Model</label><select id="model" onchange="onModelChange()"><option value="happyhorse-1.0-i2v">Happy Horse 1.0 (I2V)</option><option value="kling-v3-omni">Kling 3 Omni</option><option value="kling-3.0-turbo">Kling 3 Turbo</option><option value="kling-v3">Kling v3</option><option value="kling-v2-6">Kling 2.6</option><option value="MiniMax-Hailuo-2.3">Hailuo 2.3</option></select></div>
           <div class="ctrl"><label>Durasi</label><select id="duration"><option value="5">5 detik</option><option value="10">10 detik</option><option value="15">15 detik</option></select></div>
-          <div class="ctrl"><label>Mode</label><select id="mode"><option value="std">Standard</option><option value="pro">Pro</option></select></div>
-          <div class="ctrl"><label>Rasio</label><select id="aspect"><option value="16:9">16:9 Landscape</option><option value="9:16">9:16 Portrait</option><option value="1:1">1:1 Square</option></select></div>
+          <div class="ctrl" id="modeCtrl"><label>Mode</label><select id="mode"><option value="std">Standard</option><option value="pro">Pro</option></select></div>
+          <div class="ctrl" id="aspectCtrl"><label>Rasio</label><select id="aspect"><option value="16:9">16:9 Landscape</option><option value="9:16">9:16 Portrait</option><option value="1:1">1:1 Square</option></select></div>
+          <div class="ctrl" id="sizeCtrl" style="display:none"><label>Size</label><select id="size"><option value="720p">720p</option><option value="1080p">1080p</option></select></div>
+        </div>
+        <div id="imgUpload" style="margin-bottom:1rem">
+          <label style="display:block;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.3rem">Reference Image</label>
+          <div id="dropZone" style="border:1.5px dashed var(--border);border-radius:13px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s" onclick="document.getElementById('fileInput').click()">
+            <div id="dropText" style="color:var(--muted);font-size:.85rem">📷 Klik atau drag image ke sini (PNG/JPG/WebP, max 20MB)</div>
+            <div id="imgPreview" style="display:none;margin-top:.8rem"><img id="previewImg" style="max-width:200px;max-height:150px;border-radius:8px"><div style="margin-top:.4rem;font-size:.7rem;color:var(--green)">✓ <span id="imgName"></span></div></div>
+          </div>
+          <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none" onchange="handleFile(this)">
         </div>
         <button class="btn" id="genBtn" onclick="gen()"><span>✦</span> Generate</button>
         <div class="live-tasks" id="liveTasks"></div>
@@ -167,24 +176,91 @@ function rApp(){
       </div>
       <div class="modal" id="modal" onclick="closeModal()"><div class="modal-inner" onclick="event.stopPropagation()"><button class="modal-close" onclick="closeModal()">✕</button><video controls autoplay loop id="modalVideo"></video></div></div>
     </div>`;
+  onModelChange();
 }
+
+let UPLOADED_IMG_URL = null;
+
+function onModelChange(){
+  const m = document.getElementById('model').value;
+  const isI2V = m === 'happyhorse-1.0-i2v';
+  document.getElementById('imgUpload').style.display = isI2V ? 'block' : 'none';
+  document.getElementById('sizeCtrl').style.display = isI2V ? 'block' : 'none';
+  document.getElementById('modeCtrl').style.display = isI2V ? 'none' : 'block';
+  document.getElementById('aspectCtrl').style.display = isI2V ? 'none' : 'block';
+  document.querySelector('.prompt-meta span').textContent = isI2V ? 'Image-to-Video' : 'Text-to-Video';
+}
+
+async function handleFile(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 20*1024*1024){ alert('Max 20MB'); return; }
+
+  // Preview
+  const reader = new FileReader();
+  reader.onload = (e) => { document.getElementById('previewImg').src = e.target.result; };
+  reader.readAsDataURL(file);
+  document.getElementById('imgPreview').style.display = 'block';
+  document.getElementById('dropText').textContent = 'Uploading...';
+  document.getElementById('imgName').textContent = file.name;
+
+  // Upload to R2
+  const fd = new FormData();
+  fd.append('image', file);
+  try{
+    const r = await fetch('/api/upload', { method:'POST', headers:{'X-API-Key':AK}, body:fd });
+    const d = await r.json();
+    if(d.url){
+      UPLOADED_IMG_URL = d.url;
+      document.getElementById('dropText').textContent = '📷 Change image';
+    } else {
+      document.getElementById('dropText').textContent = 'Upload failed: '+(d.error||'unknown');
+    }
+  }catch(err){
+    document.getElementById('dropText').textContent = 'Upload failed: '+err.message;
+  }
+}
+
+// Drag & drop
+document.addEventListener('dragover', e => { e.preventDefault(); });
+document.addEventListener('drop', e => {
+  e.preventDefault();
+  const dz = document.getElementById('dropZone');
+  if(dz && e.dataTransfer.files.length){
+    const input = document.getElementById('fileInput');
+    input.files = e.dataTransfer.files;
+    handleFile(input);
+  }
+});
 
 async function gen(){
   const p=document.getElementById('prompt').value.trim();
   if(!p) return alert('Masukkan prompt!');
   
-  const id = uid();
   const model = document.getElementById('model').value;
   const duration = document.getElementById('duration').value;
+  const isI2V = model === 'happyhorse-1.0-i2v';
+  
+  if(isI2V && !UPLOADED_IMG_URL) return alert('Upload reference image dulu!');
+  
+  const body = { prompt:p, model, duration };
+  if(isI2V){
+    body.size = document.getElementById('size').value;
+    body.inputReference = UPLOADED_IMG_URL;
+  } else {
+    body.mode = document.getElementById('mode').value;
+    body.aspectRatio = document.getElementById('aspect').value;
+  }
   
   // Add live card
+  const id = uid();
   TASKS[id] = { status:'sending', prompt:p, model, duration };
   addHistory(id, p, model, duration, 'processing');
   renderLiveTasks();
   document.getElementById('prompt').value='';
   
   try{
-    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':AK},body:JSON.stringify({prompt:p,model,duration,mode:document.getElementById('mode').value,aspectRatio:document.getElementById('aspect').value})});
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':AK},body:JSON.stringify(body)});
     const d=await r.json();
     
     if(d.task_id){
