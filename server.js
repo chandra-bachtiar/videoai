@@ -42,7 +42,7 @@ const upload = multer({
 const MODEL_CONFIG = {
   'happyhorse-1.0-i2v': {
     buildPayload(p, d, m, a, size, inputRef) {
-      return { model: 'happyhorse-1.0-i2v', prompt: p, input_reference: inputRef, size: size || '720p', duration: Number(d || 5), metadata: {} };
+      return { model: 'happyhorse-1.0-i2v', prompt: p, input: { media: inputRef }, size: size || '720p', duration: Number(d || 5), metadata: {} };
     }
   },
   'kling-v3-omni': {
