@@ -2,13 +2,41 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const multer = require('multer');
+const { S3Client } = require('@aws-sdk/client-s3');
+const { Upload } = require('@aws-sdk/lib-storage');
+const crypto = require('crypto');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const TR_API = 'https://api.tokenrouter.com/v1/video/generations';
+
+// ── R2 / S3 config ──────────────────────────────────────────────
+
+const R2 = new S3Client({
+  region: 'auto',
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+  },
+});
+
+const R2_BUCKET = process.env.R2_BUCKET || 'videoai-uploads';
+const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL || 'https://videoai-cdn.chand.my.id';
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+  fileFilter: (req, file, cb) => {
+    const allowed = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+    if (!allowed.includes(file.mimetype)) return cb(new Error('Only PNG/JPEG/WebP/GIF allowed'));
+    cb(null, true);
+  },
+});
 
 // Model config — each model knows its payload format
 const MODEL_CONFIG = {
@@ -63,6 +91,33 @@ app.use('/api', (req, res, next) => {
 });
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
+
+// ── Upload image to R2 ─────────────────────────────────────────
+
+app.post('/api/upload', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No image provided' });
+
+    const ext = req.file.mimetype.split('/')[1];
+    const key = `images/${Date.now()}-${crypto.randomBytes(8).toString('hex')}.${ext}`;
+
+    const result = await new Upload({
+      client: R2,
+      params: {
+        Bucket: R2_BUCKET,
+        Key: key,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+      },
+    }).done();
+
+    const url = `${R2_PUBLIC_URL}/${key}`;
+    res.json({ url, key });
+  } catch (err) {
+    console.error('Upload error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Submit generation
 app.post('/api/generate', async (req, res) => {
