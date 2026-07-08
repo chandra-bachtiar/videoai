@@ -10,10 +10,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const TR_API = 'https://api.tokenrouter.com/v1/video/generations';
 
-// Model config — each model knows its api_version and payload format
+// Model config — each model knows its payload format
 const MODEL_CONFIG = {
+  'happyhorse-1.0-t2v': {
+    buildPayload(p, d, m, a, size) {
+      return { model: 'happyhorse-1.0-t2v', prompt: p, size: size || '1920*1080', duration: Number(d || 5), metadata: {} };
+    }
+  },
   'kling-v3-omni': {
-    api_version: 'omni',
     buildPayload(p, d, m, a) {
       const pld = { api_version:'omni', model:'kling-v3-omni', prompt:p, mode:m||'std', duration:String(d||5) };
       if (a) pld.aspect_ratio = a;
@@ -21,7 +25,6 @@ const MODEL_CONFIG = {
     }
   },
   'kling-3.0-turbo': {
-    api_version: 'turbo',
     buildPayload(p, d, m, a) {
       const pld = { api_version:'turbo', model:'kling-3.0-turbo', prompt:p, metadata:{ settings:{ duration:Number(d||10) } } };
       if (a) pld.metadata.settings.aspect_ratio = a;
@@ -29,7 +32,6 @@ const MODEL_CONFIG = {
     }
   },
   'kling-v3': {
-    api_version: 'v3',
     buildPayload(p, d, m, a) {
       const pld = { api_version:'v3', model:'kling-v3', prompt:p, mode:m||'std', duration:String(d||5) };
       if (a) pld.aspect_ratio = a;
@@ -37,7 +39,6 @@ const MODEL_CONFIG = {
     }
   },
   'kling-v2-6': {
-    api_version: 'v2.6',
     buildPayload(p, d, m, a) {
       const pld = { api_version:'v2.6', model:'kling-v2-6', prompt:p, mode:m||'std', duration:String(d||5) };
       if (a) pld.aspect_ratio = a;
@@ -45,7 +46,6 @@ const MODEL_CONFIG = {
     }
   },
   'MiniMax-Hailuo-2.3': {
-    api_version: 'hailuo',
     buildPayload(p, d, m, a) {
       const pld = { api_version:'hailuo', model:'MiniMax-Hailuo-2.3', prompt:p, duration:String(d||5) };
       if (a) pld.aspect_ratio = a;
@@ -67,11 +67,11 @@ app.get('/api/health', (req, res) => res.json({ ok: true }));
 // Submit generation
 app.post('/api/generate', async (req, res) => {
   try {
-    const { prompt, duration, model, mode, aspectRatio } = req.body;
+    const { prompt, duration, model, mode, aspectRatio, size } = req.body;
     if (!prompt) return res.status(400).json({ error: 'Prompt wajib diisi' });
 
-    const cfg = MODEL_CONFIG[model] || MODEL_CONFIG['kling-v3-omni'];
-    const payload = cfg.buildPayload(prompt, duration, mode, aspectRatio);
+    const cfg = MODEL_CONFIG[model] || MODEL_CONFIG['happyhorse-1.0-t2v'];
+    const payload = cfg.buildPayload(prompt, duration, mode, aspectRatio, size);
 
     const result = await fetch(TR_API, {
       method: 'POST',
