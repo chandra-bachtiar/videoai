@@ -12,9 +12,9 @@ const TR_API = 'https://api.tokenrouter.com/v1/video/generations';
 
 // Model config — each model knows its payload format
 const MODEL_CONFIG = {
-  'happyhorse-1.0-t2v': {
-    buildPayload(p, d, m, a, size) {
-      return { model: 'happyhorse-1.0-t2v', prompt: p, size: size || '1920*1080', duration: Number(d || 5), metadata: {} };
+  'happyhorse-1.0-i2v': {
+    buildPayload(p, d, m, a, size, inputRef) {
+      return { model: 'happyhorse-1.0-i2v', prompt: p, input_reference: inputRef, size: size || '720p', duration: Number(d || 5), metadata: {} };
     }
   },
   'kling-v3-omni': {
@@ -67,11 +67,11 @@ app.get('/api/health', (req, res) => res.json({ ok: true }));
 // Submit generation
 app.post('/api/generate', async (req, res) => {
   try {
-    const { prompt, duration, model, mode, aspectRatio, size } = req.body;
+    const { prompt, duration, model, mode, aspectRatio, size, inputReference } = req.body;
     if (!prompt) return res.status(400).json({ error: 'Prompt wajib diisi' });
 
-    const cfg = MODEL_CONFIG[model] || MODEL_CONFIG['happyhorse-1.0-t2v'];
-    const payload = cfg.buildPayload(prompt, duration, mode, aspectRatio, size);
+    const cfg = MODEL_CONFIG[model] || MODEL_CONFIG['happyhorse-1.0-i2v'];
+    const payload = cfg.buildPayload(prompt, duration, mode, aspectRatio, size, inputReference);
 
     const result = await fetch(TR_API, {
       method: 'POST',
